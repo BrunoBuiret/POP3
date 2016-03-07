@@ -16,4 +16,9 @@ public abstract class Pop3Protocol
      * POP3's error indicator.
      */
     public static final String MESSAGE_ERROR = "-ERR";
+    
+    /**
+     * A request's or response's end of line.
+     */
+    public static final String END_OF_LINE = "\r\n";
 }
