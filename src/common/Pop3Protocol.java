@@ -21,4 +21,20 @@ public abstract class Pop3Protocol
      * A request's or response's end of line.
      */
     public static final String END_OF_LINE = "\r\n";
+    
+    public static final String COMMAND_APOP = "APOP";
+    
+    public static final String COMMAND_USER = "USER";
+    
+    public static final String COMMAND_PASSWORD = "PASS";
+    
+    public static final String COMMAND_QUIT = "QUIT";
+    
+    public static final String COMMAND_LIST = "LIST";
+    
+    public static final String COMMAND_STATISTICS = "STAT";
+    
+    public static final String COMMAND_RETRIEVE = "RETR";
+    
+    public static final String COMMAND_DELETE = "DELE";
 }
