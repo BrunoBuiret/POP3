@@ -124,6 +124,16 @@ public class Pop3Server
     }
     
     /**
+     * Gets the server's name.
+     * 
+     * @return The server's name.
+     */
+    public String getName()
+    {
+        return this.name;
+    }
+    
+    /**
      * Gets the server's port.
      * 
      * @return The server's port.
