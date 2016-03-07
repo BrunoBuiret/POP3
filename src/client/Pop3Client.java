@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+package client;
+>>>>>>> b1eff1994e652790582ae45212b9782a79665356
 
 import java.io.IOException;
 import java.net.InetAddress;
