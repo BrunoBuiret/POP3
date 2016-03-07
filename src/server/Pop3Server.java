@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import server.commands.AbstractPop3Command;
 
 /**
  * @author Bruno Buiret <bruno.buiret@etu.univ-lyon1.fr>
@@ -48,23 +50,7 @@ public class Pop3Server
     /**
      * The server' supported commands.
      */
-    public static List<String> supportedCommands;
-    
-    /**
-     * Initializes static properties.
-     */
-    static
-    {
-        Pop3Server.supportedCommands = new ArrayList<>();
-        Pop3Server.supportedCommands.add(Pop3Protocol.COMMAND_APOP);
-        Pop3Server.supportedCommands.add(Pop3Protocol.COMMAND_USER);
-        Pop3Server.supportedCommands.add(Pop3Protocol.COMMAND_PASSWORD);
-        Pop3Server.supportedCommands.add(Pop3Protocol.COMMAND_QUIT);
-        Pop3Server.supportedCommands.add(Pop3Protocol.COMMAND_LIST);
-        Pop3Server.supportedCommands.add(Pop3Protocol.COMMAND_STATISTICS);
-        Pop3Server.supportedCommands.add(Pop3Protocol.COMMAND_RETRIEVE);
-        Pop3Server.supportedCommands.add(Pop3Protocol.COMMAND_DELETE);
-    }
+    public Map<String, AbstractPop3Command> supportedCommands;
     
     /**
      * Creates a new POP3 server using the default name and port,
@@ -175,5 +161,18 @@ public class Pop3Server
     public boolean isDebug()
     {
         return this.debug;
+    }
+    
+    /**
+     * 
+     * @param command
+     * @return 
+     */
+    public AbstractPop3Command supportsCommand(String command)
+    {
+        return this.supportedCommands.containsKey(command)
+            ? this.supportedCommands.get(command)
+            : null
+        ;
     }
 }

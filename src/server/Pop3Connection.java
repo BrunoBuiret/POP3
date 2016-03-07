@@ -44,11 +44,6 @@ public class Pop3Connection extends Thread
     protected Pop3State currentState;
     
     /**
-     * An indicator to know if the connection can run.
-     */
-    protected boolean canRun = false;
-    
-    /**
      * Creates a new POP3 connection.
      * 
      * @param server A reference to the server.
@@ -66,7 +61,6 @@ public class Pop3Connection extends Thread
         {
             this.socketWriter = new BufferedOutputStream(this.socket.getOutputStream());
             this.socketReader = new BufferedInputStream(this.socket.getInputStream());
-            this.canRun = true;
         }
         catch(IOException ex)
         {
@@ -79,41 +73,12 @@ public class Pop3Connection extends Thread
     }
     
     /**
-     * Try closing the socket.
-     */
-    public void close()
-    {
-        try
-        {
-            this.socket.close();
-        }
-        catch(IOException ex)
-        {
-            Logger.getLogger(Pop3Connection.class.getName()).log(
-                Level.SEVERE,
-                "Couldn't close socket.",
-                ex
-            );
-        }
-    }
-    
-    /**
      * 
      */
     @Override
     public void run()
     {
-        // Can the connection run?
-        if(!this.canRun)
-        {
-            // Close the socket
-            this.close();
-            
-            // Then, finish the thread
-            return;
-        }
-        
-        // Initialze some vars
+        // Initialize some vars
         String request, command;
         StringBuilder responseBuilder;
         
@@ -147,33 +112,6 @@ public class Pop3Connection extends Thread
             
             // Then, finish the thread
             return;
-        }
-        
-        // Wait for the authentication
-        this.currentState = Pop3State.AUTHORIZATION;
-        request = this.readRequest();
-        command = this.extractCommand(request);
-        
-        switch(command)
-        {
-            case Pop3Protocol.COMMAND_APOP:
-                
-            break;
-                
-            case Pop3Protocol.COMMAND_USER:
-                
-            break;
-            
-            case Pop3Protocol.COMMAND_PASSWORD:
-                
-            break;
-            
-            case Pop3Protocol.COMMAND_QUIT:
-                
-            break;
-            
-            default:
-                // @todo Send response "-ERR cannot use this command
         }
     }
     
@@ -212,7 +150,7 @@ public class Pop3Connection extends Thread
         {
             Logger.getLogger(Pop3Server.class.getName()).log(
                 Level.SEVERE,
-                "Couldn't read request.",
+                "Couldn't read request from client.",
                 ex
             );
         }
@@ -221,23 +159,12 @@ public class Pop3Connection extends Thread
     }
     
     /**
-     * Extracts the command from a request.
-     * 
-     * @param request The request to parse.
-     * @return The command.
-     */
-    protected String extractCommand(String request)
-    {
-        return request.contains(" ") ? request.substring(0, request.indexOf(" ")) : request;
-    }
-    
-    /**
      * Sends a response to the client.
      * 
      * @param response The response to send.
      * @throws IOException Thrown when the response can't be sent.
      */
-    protected void sendResponse(String response)
+    public void sendResponse(String response)
     throws IOException
     {
         ByteArrayOutputStream dataStream;
@@ -273,43 +200,42 @@ public class Pop3Connection extends Thread
         }
     }
     
-    protected void handleUser(String userName)
+    /**
+     * Try closing the socket.
+     */
+    public void close()
     {
-        
+        try
+        {
+            this.socket.close();
+        }
+        catch(IOException ex)
+        {
+            Logger.getLogger(Pop3Connection.class.getName()).log(
+                Level.SEVERE,
+                "Couldn't close socket.",
+                ex
+            );
+        }
     }
     
-    protected void handlePass(String password)
+    /**
+     * Gets a connection's current state.
+     * 
+     * @return The current state.
+     */
+    public Pop3State getCurrentState()
     {
-        
+        return this.currentState;
     }
     
-    protected void handleApop(String userName, String digest)
+    /**
+     * Sets a connection's current state.
+     * 
+     * @param state The state.
+     */
+    public void setCurrentState(Pop3State state)
     {
-        
-    }
-    
-    protected void handleList()
-    {
-        
-    }
-    
-    protected void handleStat()
-    {
-        
-    }
-    
-    protected void handleRetr(int messageIndex)
-    {
-        
-    }
-    
-    protected void handleDele(int messageIndex)
-    {
-        
-    }
-    
-    protected void handleQuit()
-    {
-        
+        this.currentState = state;
     }
 }
