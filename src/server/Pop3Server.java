@@ -1,7 +1,10 @@
 package server;
 
+import common.Pop3Protocol;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,6 +44,27 @@ public class Pop3Server
      * The server's debug mode.
      */
     protected boolean debug;
+    
+    /**
+     * The server' supported commands.
+     */
+    public static List<String> supportedCommands;
+    
+    /**
+     * Initializes static properties.
+     */
+    static
+    {
+        Pop3Server.supportedCommands = new ArrayList<>();
+        Pop3Server.supportedCommands.add(Pop3Protocol.COMMAND_APOP);
+        Pop3Server.supportedCommands.add(Pop3Protocol.COMMAND_USER);
+        Pop3Server.supportedCommands.add(Pop3Protocol.COMMAND_PASSWORD);
+        Pop3Server.supportedCommands.add(Pop3Protocol.COMMAND_QUIT);
+        Pop3Server.supportedCommands.add(Pop3Protocol.COMMAND_LIST);
+        Pop3Server.supportedCommands.add(Pop3Protocol.COMMAND_STATISTICS);
+        Pop3Server.supportedCommands.add(Pop3Protocol.COMMAND_RETRIEVE);
+        Pop3Server.supportedCommands.add(Pop3Protocol.COMMAND_DELETE);
+    }
     
     /**
      * Creates a new POP3 server using the default name and port,
