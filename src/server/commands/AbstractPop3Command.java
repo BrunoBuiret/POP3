@@ -20,7 +20,9 @@ public abstract class AbstractPop3Command
     /**
      * Handles the request.
      * 
+     * @param connection A reference to the connection.
      * @param request The request to handle.
+     * @return <code>true</code> to keep looping, <code>false</code> otherwise.
      */
-    public abstract void handle(String request);
+    public abstract boolean handle(Pop3Connection connection, String request);
 }

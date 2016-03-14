@@ -4,6 +4,7 @@ import common.Pop3Protocol;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -95,6 +96,7 @@ public class Pop3Server
         this.name = name;
         this.port = port;
         this.debug = debug;
+        this.supportedCommands = new HashMap<>();
         
         try
         {
