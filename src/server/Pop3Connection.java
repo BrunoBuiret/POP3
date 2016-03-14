@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import server.commands.AbstractPop3Command;
 
 /**
  * @author Bruno Buiret <bruno.buiret@etu.univ-lyon1.fr>
@@ -79,7 +80,6 @@ public class Pop3Connection extends Thread
     public void run()
     {
         // Initialize some vars
-        String request, command;
         StringBuilder responseBuilder;
         
         // Indicate the connection has been established
@@ -108,11 +108,89 @@ public class Pop3Connection extends Thread
             );
             
             // Close the socket
-            this.close();
+            this.closeSocket();
             
             // Then, finish the thread
             return;
         }
+        
+        // Main loop
+        String request;
+        boolean keepLooping = true;
+        AbstractPop3Command command;
+        
+        do
+        {
+            // Read the client's request
+            request = this.readRequest();
+            command = this.server.supportsCommand(Pop3Protocol.extractCommand(request));
+            
+            // Is the command supported?
+            if(null != command)
+            {
+                if(command.isValid(this))
+                {
+                    // Handle the command
+                    keepLooping = command.handle(this, request);
+                }
+                else
+                {
+                    // The command is invalid because it can't be used right now
+                    try
+                    {
+                        // Build the error response
+                        responseBuilder = new StringBuilder();
+                        responseBuilder.append(Pop3Protocol.MESSAGE_ERROR);
+                        responseBuilder.append(" invalid command");
+                        responseBuilder.append(Pop3Protocol.END_OF_LINE);
+
+                        // Then, send it
+                        this.sendResponse(responseBuilder.toString());
+                    }
+                    catch(IOException ex)
+                    {
+                        Logger.getLogger(Pop3Connection.class.getName()).log(
+                            Level.SEVERE,
+                            "Couldn't send error response.",
+                            ex
+                        );
+                    }
+                    finally
+                    {
+                        // Finally, clear the builder
+                        responseBuilder = null;
+                    }
+                }
+            }
+            else
+            {
+                try
+                {
+                    // Build the error response
+                    responseBuilder = new StringBuilder();
+                    responseBuilder.append(Pop3Protocol.MESSAGE_ERROR);
+                    responseBuilder.append(" unknown command");
+                    responseBuilder.append(Pop3Protocol.END_OF_LINE);
+
+                    // Then, send it
+                    this.sendResponse(responseBuilder.toString());
+                }
+                catch(IOException ex)
+                {
+                    Logger.getLogger(Pop3Connection.class.getName()).log(
+                        Level.SEVERE,
+                        "Couldn't send error response.",
+                        ex
+                    );
+                }
+                finally
+                {
+                    // Finally, clear the builder
+                    responseBuilder = null;
+                }
+            }
+        }
+        while(keepLooping);
     }
     
     /**
@@ -144,7 +222,7 @@ public class Pop3Connection extends Thread
                 );
             }
             
-            return new String(dataStream.toByteArray());
+            return new String(dataStream.toByteArray()).trim();
         }
         catch(IOException ex)
         {
@@ -192,7 +270,7 @@ public class Pop3Connection extends Thread
         {
             Logger.getLogger(Pop3Connection.class.getName()).log(
                 Level.SEVERE,
-                "Can't send response to the client.",
+                "Couldn't send response to the client.",
                 ex
             );
             
@@ -203,7 +281,7 @@ public class Pop3Connection extends Thread
     /**
      * Try closing the socket.
      */
-    public void close()
+    public void closeSocket()
     {
         try
         {
@@ -217,6 +295,16 @@ public class Pop3Connection extends Thread
                 ex
             );
         }
+    }
+    
+    /**
+     * Gets a connection's reference to the server.
+     * 
+     * @return The server.
+     */
+    public Pop3Server getServer()
+    {
+        return this.server;
     }
     
     /**
