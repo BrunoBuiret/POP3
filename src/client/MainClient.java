@@ -13,6 +13,6 @@ abstract class MainClient
     {
         int port = 110;
         InetAddress ip = null;
-        Pop3Client client = new Pop3Client(ip, port, "Thomas");
+        Pop3Client client = new Pop3Client(ip, port, "Thomas", "admin");
     }
 }
