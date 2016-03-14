@@ -21,12 +21,17 @@ public class Pop3Server
     /**
      * Default server name.
      */
-    public static final String DEFAULT_NAME = "NAME";
+    public static final String DEFAULT_NAME = "<NAME>";
     
     /**
      * Default server port.
      */
     public static final int DEFAULT_PORT = 110;
+    
+    /**
+     * Default path to the mailboxes.
+     */
+    public static final String DEFAULT_MAILBOXES_PATH = ".";
     
     /**
      * The server' socket.
@@ -49,6 +54,11 @@ public class Pop3Server
     protected boolean debug;
     
     /**
+     * The server's path to its mailboxes directory.
+     */
+    protected String mailboxesPath;
+    
+    /**
      * The server' supported commands.
      */
     public Map<String, AbstractPop3Command> supportedCommands;
@@ -59,7 +69,7 @@ public class Pop3Server
      */
     public Pop3Server()
     {
-        this(Pop3Server.DEFAULT_NAME, Pop3Server.DEFAULT_PORT, false);
+        this(Pop3Server.DEFAULT_NAME, Pop3Server.DEFAULT_PORT, Pop3Server.DEFAULT_MAILBOXES_PATH, false);
     }
     
     /**
@@ -70,7 +80,7 @@ public class Pop3Server
      */
     public Pop3Server(String name)
     {
-        this(name, Pop3Server.DEFAULT_PORT, false);
+        this(name, Pop3Server.DEFAULT_PORT, Pop3Server.DEFAULT_MAILBOXES_PATH, false);
     }
     
     /**
@@ -81,7 +91,28 @@ public class Pop3Server
      */
     public Pop3Server(int port)
     {
-        this(Pop3Server.DEFAULT_NAME, port, false);
+        this(Pop3Server.DEFAULT_NAME, port, Pop3Server.DEFAULT_MAILBOXES_PATH, false);
+    }
+    
+    /**
+     * 
+     * @param name
+     * @param port 
+     */
+    public Pop3Server(String name, int port)
+    {
+        this(name, port, Pop3Server.DEFAULT_MAILBOXES_PATH, false);
+    }
+    
+    /**
+     * 
+     * @param name
+     * @param port 
+     * @param mailboxesPath 
+     */
+    public Pop3Server(String name, int port, String mailboxesPath)
+    {
+        this(name, port, mailboxesPath, false);
     }
     
     /**
@@ -90,12 +121,14 @@ public class Pop3Server
      * @param name The server's name.
      * @param port The server's port.
      * @param debug The server's debug mode.
+     * @param mailboxesPath
      */
-    public Pop3Server(String name, int port, boolean debug)
+    public Pop3Server(String name, int port, String mailboxesPath, boolean debug)
     {
         this.name = name;
         this.port = port;
         this.debug = debug;
+        this.mailboxesPath = mailboxesPath;
         this.supportedCommands = new HashMap<>();
         
         try

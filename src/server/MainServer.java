@@ -13,7 +13,7 @@ public abstract class MainServer
      */
     public static void main(String[] args)
     {
-        Pop3Server server = new Pop3Server(Pop3Server.DEFAULT_NAME, Pop3Server.DEFAULT_PORT, true);
+        Pop3Server server = new Pop3Server(Pop3Server.DEFAULT_NAME, Pop3Server.DEFAULT_PORT, Pop3Server.DEFAULT_MAILBOXES_PATH, true);
         server.run();
     }
 }

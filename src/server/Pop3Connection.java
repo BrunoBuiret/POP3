@@ -98,6 +98,9 @@ public class Pop3Connection extends Thread
             
             // Finally, clear the builder
             responseBuilder = null;
+            
+            // And set the state
+            this.currentState = Pop3State.AUTHORIZATION;
         }
         catch(IOException ex)
         {
