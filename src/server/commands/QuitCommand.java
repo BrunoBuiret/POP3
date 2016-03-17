@@ -1,6 +1,5 @@
 package server.commands;
 
-import common.Pop3State;
 import server.Pop3Connection;
 
 /**
@@ -8,7 +7,7 @@ import server.Pop3Connection;
  * @author Thomas Arnaud <thomas.arnaud@etu.univ-lyon1.fr>
  * @author Alexis Rabilloud <alexis.rabilloud@etu.univ-lyon1.fr>
  */
-public class UserCommand extends AbstractPop3Command
+public class QuitCommand extends AbstractPop3Command
 {
     /**
      * {@inheritDoc}
@@ -16,7 +15,7 @@ public class UserCommand extends AbstractPop3Command
     @Override
     public boolean isValid(Pop3Connection connection)
     {
-        return Pop3State.AUTHORIZATION == connection.getCurrentState();
+        return true;
     }
 
     /**
@@ -25,9 +24,6 @@ public class UserCommand extends AbstractPop3Command
     @Override
     public boolean handle(Pop3Connection connection, String request)
     {
-        // Extract the user's name from the request
-        String userName = request.substring(5).trim();
-        
-        return true;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
