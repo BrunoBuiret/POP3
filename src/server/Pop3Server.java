@@ -1,15 +1,19 @@
 package server;
 
-import common.Pop3Protocol;
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import server.commands.AbstractPop3Command;
+import server.commands.DeleCommand;
+import server.commands.ListCommand;
+import server.commands.PassCommand;
+import server.commands.QuitCommand;
+import server.commands.RetrCommand;
+import server.commands.StatCommand;
+import server.commands.UserCommand;
 
 /**
  * @author Bruno Buiret <bruno.buiret@etu.univ-lyon1.fr>
@@ -56,7 +60,7 @@ public class Pop3Server
     /**
      * The server's path to its mailboxes directory.
      */
-    protected String mailboxesPath;
+    protected String mailBoxesPath;
     
     /**
      * The server' supported commands.
@@ -128,9 +132,40 @@ public class Pop3Server
         this.name = name;
         this.port = port;
         this.debug = debug;
-        this.mailboxesPath = mailboxesPath;
+        this.mailBoxesPath = mailboxesPath;
         this.supportedCommands = new HashMap<>();
         
+        // Register commands
+        this.supportedCommands.put(
+            "QUIT",
+            new QuitCommand()
+        );
+        this.supportedCommands.put(
+            "USER",
+            new UserCommand()
+        );
+        this.supportedCommands.put(
+            "PASS",
+            new PassCommand()
+        );
+        this.supportedCommands.put(
+            "LIST",
+            new ListCommand()
+        );
+        this.supportedCommands.put(
+            "STAT",
+            new StatCommand()
+        );
+        this.supportedCommands.put(
+            "RETR",
+            new RetrCommand()
+        );
+        this.supportedCommands.put(
+            "DELE",
+            new DeleCommand()
+        );
+        
+        // Start server
         try
         {
             this.socket = new ServerSocket(this.port);
@@ -196,6 +231,15 @@ public class Pop3Server
     public boolean isDebug()
     {
         return this.debug;
+    }
+    
+    /**
+     * 
+     * @return 
+     */
+    public String getMailBoxesPath()
+    {
+        return this.mailBoxesPath;
     }
     
     /**

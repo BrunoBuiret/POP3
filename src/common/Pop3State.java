@@ -7,8 +7,20 @@ package common;
  */
 public enum Pop3State
 {
+    /**
+     * The thread has just been started.
+     */
     INITIALIZATION,
+    /**
+     * Waiting for authentication from the user.
+     */
     AUTHORIZATION,
+    /**
+     * User has been authenticated.
+     */
     TRANSACTION,
+    /**
+     * User is logging out of the server.
+     */
     UPDATE;
 }

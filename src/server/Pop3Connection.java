@@ -2,6 +2,7 @@ package server;
 
 import common.Pop3Protocol;
 import common.Pop3State;
+import common.mail.MailBox;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -23,12 +24,12 @@ public class Pop3Connection extends Thread
      * The connection's link to the server.
      */
     protected Pop3Server server;
-    
+
     /**
      * The connection' socket.
      */
     protected Socket socket;
-    
+
     /**
      * The connection's output stream.
      */
@@ -38,15 +39,20 @@ public class Pop3Connection extends Thread
      * The connection's input stream.
      */
     protected BufferedInputStream socketReader;
-    
+
     /**
      * The connection's current state.
      */
     protected Pop3State currentState;
-    
+
+    /**
+     *
+     */
+    protected MailBox mailbox;
+
     /**
      * Creates a new POP3 connection.
-     * 
+     *
      * @param server A reference to the server.
      * @param socket The newly created socket.
      */
@@ -56,7 +62,7 @@ public class Pop3Connection extends Thread
         this.server = server;
         this.socket = socket;
         this.currentState = Pop3State.INITIALIZATION;
-        
+
         // Try getting the socket's different streams
         try
         {
@@ -72,16 +78,16 @@ public class Pop3Connection extends Thread
             );
         }
     }
-    
+
     /**
-     * 
+     *
      */
     @Override
     public void run()
     {
         // Initialize some vars
         StringBuilder responseBuilder;
-        
+
         // Indicate the connection has been established
         try
         {
@@ -92,13 +98,13 @@ public class Pop3Connection extends Thread
             responseBuilder.append(this.server.getName());
             responseBuilder.append(" POP3 server ready");
             responseBuilder.append(Pop3Protocol.END_OF_LINE);
-            
+
             // Then, send it
             this.sendResponse(responseBuilder.toString());
-            
+
             // Finally, clear the builder
             responseBuilder = null;
-            
+
             // And set the state
             this.currentState = Pop3State.AUTHORIZATION;
         }
@@ -109,42 +115,73 @@ public class Pop3Connection extends Thread
                 "Couldn't send greetings.",
                 ex
             );
-            
+
             // Close the socket
             this.closeSocket();
-            
+
             // Then, finish the thread
             return;
         }
-        
+
         // Main loop
         String request;
         boolean keepLooping = true;
         AbstractPop3Command command;
-        
+
         do
         {
             // Read the client's request
             request = this.readRequest();
-            command = this.server.supportsCommand(Pop3Protocol.extractCommand(request));
-            
-            // Is the command supported?
-            if(null != command)
+
+            if(!request.isEmpty())
             {
-                if(command.isValid(this))
+                command = this.server.supportsCommand(Pop3Protocol.extractCommand(request));
+
+                // Is the command supported?
+                if(null != command)
                 {
-                    // Handle the command
-                    keepLooping = command.handle(this, request);
+                    if(command.isValid(this))
+                    {
+                        // Handle the command
+                        keepLooping = command.handle(this, request);
+                    }
+                    else
+                    {
+                        // The command is invalid because it can't be used right now
+                        try
+                        {
+                            // Build the error response
+                            responseBuilder = new StringBuilder();
+                            responseBuilder.append(Pop3Protocol.MESSAGE_ERROR);
+                            responseBuilder.append(" invalid command");
+                            responseBuilder.append(Pop3Protocol.END_OF_LINE);
+
+                            // Then, send it
+                            this.sendResponse(responseBuilder.toString());
+                        }
+                        catch(IOException ex)
+                        {
+                            Logger.getLogger(Pop3Connection.class.getName()).log(
+                                Level.SEVERE,
+                                "Couldn't send error response.",
+                                ex
+                            );
+                        }
+                        finally
+                        {
+                            // Finally, clear the builder
+                            responseBuilder = null;
+                        }
+                    }
                 }
                 else
                 {
-                    // The command is invalid because it can't be used right now
                     try
                     {
                         // Build the error response
                         responseBuilder = new StringBuilder();
                         responseBuilder.append(Pop3Protocol.MESSAGE_ERROR);
-                        responseBuilder.append(" invalid command");
+                        responseBuilder.append(" unknown command");
                         responseBuilder.append(Pop3Protocol.END_OF_LINE);
 
                         // Then, send it
@@ -165,50 +202,23 @@ public class Pop3Connection extends Thread
                     }
                 }
             }
-            else
-            {
-                try
-                {
-                    // Build the error response
-                    responseBuilder = new StringBuilder();
-                    responseBuilder.append(Pop3Protocol.MESSAGE_ERROR);
-                    responseBuilder.append(" unknown command");
-                    responseBuilder.append(Pop3Protocol.END_OF_LINE);
-
-                    // Then, send it
-                    this.sendResponse(responseBuilder.toString());
-                }
-                catch(IOException ex)
-                {
-                    Logger.getLogger(Pop3Connection.class.getName()).log(
-                        Level.SEVERE,
-                        "Couldn't send error response.",
-                        ex
-                    );
-                }
-                finally
-                {
-                    // Finally, clear the builder
-                    responseBuilder = null;
-                }
-            }
         }
         while(keepLooping);
-        
+
         // The loop has reached its end, close the socket and end the thread
         this.closeSocket();
     }
-    
+
     /**
      * Reads a request sent by the client.
-     * 
+     *
      * @return The request.
      */
     protected String readRequest()
     {
         ByteArrayOutputStream dataStream;
         DataOutputStream dataWriter = new DataOutputStream(dataStream = new ByteArrayOutputStream());
-        
+
         try
         {
             // Try reading everything
@@ -217,7 +227,7 @@ public class Pop3Connection extends Thread
                 dataWriter.writeByte(this.socketReader.read());
             }
             while(this.socketReader.available() > 0);
-            
+
             // Log if necessary
             if(this.server.isDebug())
             {
@@ -227,7 +237,7 @@ public class Pop3Connection extends Thread
                     new Object[]{this.socket.getInetAddress(), this.socket.getPort(), new String(dataStream.toByteArray()).trim()}
                 );
             }
-            
+
             return new String(dataStream.toByteArray()).trim();
         }
         catch(IOException ex)
@@ -238,13 +248,13 @@ public class Pop3Connection extends Thread
                 ex
             );
         }
-        
+
         return null;
     }
-    
+
     /**
      * Sends a response to the client.
-     * 
+     *
      * @param response The response to send.
      * @throws IOException Thrown when the response can't be sent.
      */
@@ -253,12 +263,12 @@ public class Pop3Connection extends Thread
     {
         ByteArrayOutputStream dataStream;
         DataOutputStream dataWriter = new DataOutputStream(dataStream = new ByteArrayOutputStream());
-        
+
         try
         {
             // Transform the response into a byte array
             dataWriter.writeBytes(response);
-            
+
             // Log if necessary
             if(this.server.isDebug())
             {
@@ -268,7 +278,7 @@ public class Pop3Connection extends Thread
                     new Object[]{this.socket.getInetAddress(), this.socket.getPort(), response.trim()}
                 );
             }
-            
+
             // Then, send the response to the client
             this.socketWriter.write(dataStream.toByteArray());
         }
@@ -279,11 +289,11 @@ public class Pop3Connection extends Thread
                 "Couldn't send response to the client.",
                 ex
             );
-            
+
             throw ex;
         }
     }
-    
+
     /**
      * Try closing the socket.
      */
@@ -302,34 +312,52 @@ public class Pop3Connection extends Thread
             );
         }
     }
-    
+
     /**
      * Gets a connection's reference to the server.
-     * 
+     *
      * @return The server.
      */
     public Pop3Server getServer()
     {
         return this.server;
     }
-    
+
     /**
      * Gets a connection's current state.
-     * 
+     *
      * @return The current state.
      */
     public Pop3State getCurrentState()
     {
         return this.currentState;
     }
-    
+
     /**
      * Sets a connection's current state.
-     * 
+     *
      * @param state The state.
      */
     public void setCurrentState(Pop3State state)
     {
         this.currentState = state;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public MailBox getMailBox()
+    {
+        return this.mailbox;
+    }
+
+    /**
+     *
+     * @param mailBox
+     */
+    public void setMailBox(MailBox mailBox)
+    {
+        this.mailbox = mailBox;
     }
 }

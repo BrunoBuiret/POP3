@@ -1,5 +1,6 @@
 package common.mail;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,17 +12,17 @@ import java.util.Map;
 public class Mail
 {
     /**
-     * 
+     * The mail's headers list.
      */
     protected Map<String, String> headersList;
     
     /**
-     * 
+     * The mail's contents.
      */
     protected String contents;
     
     /**
-     * 
+     * Creates a new empty mail.
      */
     public Mail()
     {
@@ -30,30 +31,10 @@ public class Mail
     }
     
     /**
+     * Gets a header from the mail.
      * 
-     * @param header 
-     */
-    public void addHeader(String header)
-    {
-        int pos = header.indexOf(":");
-        
-        this.headersList.put(header.substring(0, pos), header.substring(pos + 1));
-    }
-    
-    /**
-     * 
-     * @param name
-     * @param value 
-     */
-    public void addHeader(String name, String value)
-    {
-        this.headersList.put(name, value);
-    }
-    
-    /**
-     * 
-     * @param headerName
-     * @return 
+     * @param headerName The header's name.
+     * @return The header if it exists, <code>null</code> otherwise.
      */
     public String getHeader(String headerName)
     {
@@ -61,8 +42,9 @@ public class Mail
     }
     
     /**
-     * 
-     * @return 
+     * Gets every headers from the mail.
+     
+     * @return The headers.
      */
     public Map<String, String> getHeaders()
     {
@@ -70,8 +52,32 @@ public class Mail
     }
     
     /**
+     * Adds an header to the mail.
      * 
-     * @return 
+     * @param header A string containing both the header's name and the header's value.
+     */
+    public void addHeader(String header)
+    {
+        int pos = header.indexOf(":");
+        
+        this.headersList.put(header.substring(0, pos), header.substring(pos + 2));
+    }
+    
+    /**
+     * Adds an header to the mail.
+     * 
+     * @param name The header's name.
+     * @param value The header's value.
+     */
+    public void addHeader(String name, String value)
+    {
+        this.headersList.put(name, value);
+    }
+    
+    /**
+     * Gets the mail's contents.
+     * 
+     * @return The mail's contents.
      */
     public String getContents()
     {
@@ -79,11 +85,38 @@ public class Mail
     }
     
     /**
+     * Sets the mail's contents.
      * 
-     * @param contents 
+     * @param contents The mail's contents.
      */
     public void setContents(String contents)
     {
         this.contents = contents;
+    }
+    
+    /**
+     * Gets the mail' size.
+     * 
+     * @return The mail' size.
+     */
+    public int getSize()
+    {
+        int size = 0;
+        
+        // Compute headers' length
+        for(Map.Entry<String, String> entry : this.headersList.entrySet())
+        {
+            size += entry.getKey().getBytes(StandardCharsets.ISO_8859_1).length;
+            size += 2; // ": "
+            size += entry.getValue().getBytes(StandardCharsets.ISO_8859_1).length;
+            size += 2; // "CRLF"
+        }
+        
+        size += 2; // "CRLF"
+        
+        // Add the body's length
+        size += this.contents.getBytes(StandardCharsets.ISO_8859_1).length;
+        
+        return size;
     }
 }
