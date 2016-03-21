@@ -31,14 +31,14 @@ public class Mail
     }
     
     /**
-     * Gets a header from the mail.
+     * Gets a header's value from the mail.
      * 
      * @param headerName The header's name.
-     * @return The header if it exists, <code>null</code> otherwise.
+     * @return The header's value if it exists, <code>null</code> otherwise.
      */
     public String getHeader(String headerName)
     {
-        return this.headersList.containsKey(headerName) ? this.headersList.get(headerName) : null;
+        return this.headersList.getOrDefault(headerName, null);
     }
     
     /**

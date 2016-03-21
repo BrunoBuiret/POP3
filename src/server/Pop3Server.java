@@ -60,7 +60,7 @@ public class Pop3Server
     protected boolean debug;
     
     /**
-     * The server's path to its mailboxes directory.
+     * The server's mailboxes' folder path.
      */
     protected String mailBoxesPath;
     
@@ -80,7 +80,12 @@ public class Pop3Server
      */
     public Pop3Server()
     {
-        this(Pop3Server.DEFAULT_NAME, Pop3Server.DEFAULT_PORT, Pop3Server.DEFAULT_MAILBOXES_PATH, false);
+        this(
+            Pop3Server.DEFAULT_NAME,
+            Pop3Server.DEFAULT_PORT,
+            Pop3Server.DEFAULT_MAILBOXES_PATH,
+            false
+        );
     }
     
     /**
@@ -91,24 +96,34 @@ public class Pop3Server
      */
     public Pop3Server(String name)
     {
-        this(name, Pop3Server.DEFAULT_PORT, Pop3Server.DEFAULT_MAILBOXES_PATH, false);
+        this(
+            name,
+            Pop3Server.DEFAULT_PORT,
+            Pop3Server.DEFAULT_MAILBOXES_PATH,
+            false
+        );
     }
     
     /**
      * Creates a new POP3 server using the default name and a custom port,
      * <code>Pop3Server.DEFAULT_NAME</code>.
      * 
-     * @param port the server's port.
+     * @param port The server's port.
      */
     public Pop3Server(int port)
     {
-        this(Pop3Server.DEFAULT_NAME, port, Pop3Server.DEFAULT_MAILBOXES_PATH, false);
+        this(
+            Pop3Server.DEFAULT_NAME,
+            port,
+            Pop3Server.DEFAULT_MAILBOXES_PATH,
+            false
+        );
     }
     
     /**
      * 
-     * @param name
-     * @param port 
+     * @param name The server's name.
+     * @param port The server's port.
      */
     public Pop3Server(String name, int port)
     {
@@ -116,14 +131,20 @@ public class Pop3Server
     }
     
     /**
+     * Creates a new POP3 server using a custom name and a custom port.
      * 
-     * @param name
-     * @param port 
-     * @param mailboxesPath 
+     * @param name The server's name.
+     * @param port The server's port.
+     * @param mailboxesPath The mailboxes' folder path.
      */
     public Pop3Server(String name, int port, String mailboxesPath)
     {
-        this(name, port, mailboxesPath, false);
+        this(
+            name,
+            port,
+            mailboxesPath,
+            false
+        );
     }
     
     /**
@@ -132,7 +153,7 @@ public class Pop3Server
      * @param name The server's name.
      * @param port The server's port.
      * @param debug The server's debug mode.
-     * @param mailboxesPath
+     * @param mailboxesPath The mailboxes' folder path.
      */
     public Pop3Server(String name, int port, String mailboxesPath, boolean debug)
     {
@@ -250,8 +271,9 @@ public class Pop3Server
     }
     
     /**
+     * Gets the server's mailboxes' folder path.
      * 
-     * @return 
+     * @return The server's mailboxes' folder path.
      */
     public String getMailBoxesPath()
     {
@@ -259,8 +281,9 @@ public class Pop3Server
     }
     
     /**
+     * Gets the secret used with the <code>APOP</code> command.
      * 
-     * @return 
+     * @return The secret.
      */
     public String getSecret()
     {
@@ -268,9 +291,10 @@ public class Pop3Server
     }
     
     /**
+     * Gets a command if it is supported.
      * 
-     * @param command
-     * @return 
+     * @param command The command's name.
+     * @return The command, <code>null</code> otherwise.
      */
     public AbstractPop3Command supportsCommand(String command)
     {

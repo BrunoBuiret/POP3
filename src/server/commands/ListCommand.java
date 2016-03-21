@@ -13,6 +13,8 @@ import java.util.logging.Logger;
 import server.Pop3Connection;
 
 /**
+ * Implements the <code>LIST</code> POP3 command.
+ * 
  * @author Bruno Buiret <bruno.buiret@etu.univ-lyon1.fr>
  * @author Thomas Arnaud <thomas.arnaud@etu.univ-lyon1.fr>
  * @author Alexis Rabilloud <alexis.rabilloud@etu.univ-lyon1.fr>
@@ -30,8 +32,6 @@ public class ListCommand extends AbstractPop3Command
 
     /**
      * {@inheritDoc}
-     * @todo Handle the fact that a mail index may be given.
-     * @todo Do not include messages marked as deleted
      */
     @Override
     public boolean handle(Pop3Connection connection, String request)
@@ -72,7 +72,7 @@ public class ListCommand extends AbstractPop3Command
                             {
                                 Logger.getLogger(ListCommand.class.getName()).log(
                                     Level.SEVERE,
-                                    "Retrieval response couldn't be sent.",
+                                    "Mails list response couldn't be sent.",
                                     ex
                                 );
                             }
@@ -222,19 +222,19 @@ public class ListCommand extends AbstractPop3Command
         {
             try
             {
-                // Inform the user the mailbox has been opened
+                // Inform the user there are no mailbox associated
                 responseBuilder.append(Pop3Protocol.MESSAGE_ERROR);
                 responseBuilder.append(" no mailbox associated");
                 responseBuilder.append(Pop3Protocol.END_OF_LINE);
                 
                 connection.sendResponse(responseBuilder.toString());
             }
-            catch(IOException ex1)
+            catch(IOException ex)
             {
                 Logger.getLogger(ListCommand.class.getName()).log(
                     Level.SEVERE,
                     "Mails list response couldn't be sent.",
-                    ex1
+                    ex
                 );
             }
         }

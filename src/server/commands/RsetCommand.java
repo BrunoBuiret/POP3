@@ -11,6 +11,8 @@ import java.util.logging.Logger;
 import server.Pop3Connection;
 
 /**
+ * Implements the <code>RSET</code> POP3 command.
+ * 
  * @author Bruno Buiret <bruno.buiret@etu.univ-lyon1.fr>
  * @author Thomas Arnaud <thomas.arnaud@etu.univ-lyon1.fr>
  * @author Alexis Rabilloud <alexis.rabilloud@etu.univ-lyon1.fr>
@@ -80,7 +82,7 @@ public class RsetCommand extends AbstractPop3Command
         {
             try
             {
-                // Inform the user the mailbox has been opened
+                // Inform the user there are no associated mailbox
                 responseBuilder.append(Pop3Protocol.MESSAGE_ERROR);
                 responseBuilder.append(" no mailbox associated");
                 responseBuilder.append(Pop3Protocol.END_OF_LINE);

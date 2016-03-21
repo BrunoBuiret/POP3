@@ -13,6 +13,8 @@ import java.util.logging.Logger;
 import server.Pop3Connection;
 
 /**
+ * Implements the <code>APOP</code> POP3 command.
+ * 
  * @author Bruno Buiret <bruno.buiret@etu.univ-lyon1.fr>
  * @author Thomas Arnaud <thomas.arnaud@etu.univ-lyon1.fr>
  * @author Alexis Rabilloud <alexis.rabilloud@etu.univ-lyon1.fr>
@@ -139,7 +141,7 @@ public class ApopCommand extends AbstractPop3Command
                         }
                         catch(IOException ex1)
                         {
-                            Logger.getLogger(UserCommand.class.getName()).log(
+                            Logger.getLogger(ApopCommand.class.getName()).log(
                                 Level.SEVERE,
                                 "Authentication response couldn't be sent.",
                                 ex1
@@ -161,7 +163,7 @@ public class ApopCommand extends AbstractPop3Command
                         }
                         catch(IOException ex1)
                         {
-                            Logger.getLogger(UserCommand.class.getName()).log(
+                            Logger.getLogger(ApopCommand.class.getName()).log(
                                 Level.SEVERE,
                                 "Authentication response couldn't be sent.",
                                 ex1
@@ -170,7 +172,7 @@ public class ApopCommand extends AbstractPop3Command
                     }
                     catch(IOException ex)
                     {
-                        Logger.getLogger(UserCommand.class.getName()).log(
+                        Logger.getLogger(ApopCommand.class.getName()).log(
                             Level.SEVERE,
                             "Authentication response couldn't be sent.",
                             ex

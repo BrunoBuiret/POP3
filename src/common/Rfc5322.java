@@ -23,7 +23,7 @@ public abstract class Rfc5322
     public static final int ASCII_POINT = 46;
     
     /**
-     * 
+     * The end of a line according to RFC 5322.
      */
     public static final String END_OF_LINE = "\r\n";
 }

@@ -11,6 +11,8 @@ import java.util.logging.Logger;
 import server.Pop3Connection;
 
 /**
+ * Implements the <code>STAT</code> POP3 command.
+ * 
  * @author Bruno Buiret <bruno.buiret@etu.univ-lyon1.fr>
  * @author Thomas Arnaud <thomas.arnaud@etu.univ-lyon1.fr>
  * @author Alexis Rabilloud <alexis.rabilloud@etu.univ-lyon1.fr>
@@ -53,7 +55,7 @@ public class StatCommand extends AbstractPop3Command
             
             try
             {
-                // Inform the user the mailbox has been opened
+                // Inform the user of the mailbox's number of mais and total size
                 responseBuilder.append(Pop3Protocol.MESSAGE_OK);
                 responseBuilder.append(" ");
                 responseBuilder.append(mailsNumber);
@@ -63,12 +65,12 @@ public class StatCommand extends AbstractPop3Command
                 
                 connection.sendResponse(responseBuilder.toString());
             }
-            catch(IOException ex1)
+            catch(IOException ex)
             {
-                Logger.getLogger(UserCommand.class.getName()).log(
+                Logger.getLogger(StatCommand.class.getName()).log(
                     Level.SEVERE,
-                    "Messages list couldn't be sent.",
-                    ex1
+                    "Statistics response couldn't be sent.",
+                    ex
                 );
             }
         }
@@ -76,19 +78,19 @@ public class StatCommand extends AbstractPop3Command
         {
             try
             {
-                // Inform the user the mailbox has been opened
+                // Inform the user there are no associated mailbox
                 responseBuilder.append(Pop3Protocol.MESSAGE_ERROR);
                 responseBuilder.append(" no mailbox associated");
                 responseBuilder.append(Pop3Protocol.END_OF_LINE);
                 
                 connection.sendResponse(responseBuilder.toString());
             }
-            catch(IOException ex1)
+            catch(IOException ex)
             {
-                Logger.getLogger(UserCommand.class.getName()).log(
+                Logger.getLogger(StatCommand.class.getName()).log(
                     Level.SEVERE,
-                    "Messages list couldn't be sent.",
-                    ex1
+                    "Statistics response couldn't be sent.",
+                    ex
                 );
             }
         }
