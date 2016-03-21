@@ -64,67 +64,90 @@ public class DeleCommand extends AbstractPop3Command
             try
             {
                 // Extract the mail's index from the request
-                int index = Integer.parseInt(request.substring(5).trim()) - 1;
+                int index = Integer.parseInt(request.substring(5).trim());
                 
-                try
-                {
-                    // Try marking the mail for deletion
-                    connection.getMailBox().delete(index);
-                    
-                    try
-                    {
-                        // Inform the user the mail has been marked for deletion
-                        responseBuilder.append(Pop3Protocol.MESSAGE_OK);
-                        responseBuilder.append(" message ");
-                        responseBuilder.append(index);
-                        responseBuilder.append(" deleted");
-                        responseBuilder.append(Pop3Protocol.END_OF_LINE);
-
-                        connection.sendResponse(responseBuilder.toString());
-                    }
-                    catch(IOException ex)
-                    {
-                        Logger.getLogger(DeleCommand.class.getName()).log(
-                            Level.SEVERE,
-                            "Deletion response couldn't be sent.",
-                            ex
-                        );
-                    }
-                }
-                catch(AlreadyMarkedForDeletionException ex)
+                if(index > 0)
                 {
                     try
                     {
-                        // Inform the user the mail has already been marked for deletion
-                        responseBuilder.append(Pop3Protocol.MESSAGE_ERROR);
-                        responseBuilder.append(" message ");
-                        responseBuilder.append(index);
-                        responseBuilder.append(" already deleted");
-                        responseBuilder.append(Pop3Protocol.END_OF_LINE);
+                        // Try marking the mail for deletion
+                        connection.getMailBox().delete(index - 1);
 
-                        connection.sendResponse(responseBuilder.toString());
+                        try
+                        {
+                            // Inform the user the mail has been marked for deletion
+                            responseBuilder.append(Pop3Protocol.MESSAGE_OK);
+                            responseBuilder.append(" message ");
+                            responseBuilder.append(index);
+                            responseBuilder.append(" deleted");
+                            responseBuilder.append(Pop3Protocol.END_OF_LINE);
+
+                            connection.sendResponse(responseBuilder.toString());
+                        }
+                        catch(IOException ex)
+                        {
+                            Logger.getLogger(DeleCommand.class.getName()).log(
+                                Level.SEVERE,
+                                "Deletion response couldn't be sent.",
+                                ex
+                            );
+                        }
                     }
-                    catch(IOException ex1)
+                    catch(AlreadyMarkedForDeletionException ex)
                     {
-                        Logger.getLogger(DeleCommand.class.getName()).log(
-                            Level.SEVERE,
-                            "Deletion response couldn't be sent.",
-                            ex
-                        );
+                        try
+                        {
+                            // Inform the user the mail has already been marked for deletion
+                            responseBuilder.append(Pop3Protocol.MESSAGE_ERROR);
+                            responseBuilder.append(" message ");
+                            responseBuilder.append(index);
+                            responseBuilder.append(" already deleted");
+                            responseBuilder.append(Pop3Protocol.END_OF_LINE);
+
+                            connection.sendResponse(responseBuilder.toString());
+                        }
+                        catch(IOException ex1)
+                        {
+                            Logger.getLogger(DeleCommand.class.getName()).log(
+                                Level.SEVERE,
+                                "Deletion response couldn't be sent.",
+                                ex1
+                            );
+                        }
+                    }
+                    catch(NonExistentMailException ex)
+                    {
+                        try
+                        {
+                            // Inform the user the mail doesn't exist
+                            responseBuilder.append(Pop3Protocol.MESSAGE_ERROR);
+                            responseBuilder.append(" no such message");
+                            responseBuilder.append(Pop3Protocol.END_OF_LINE);
+
+                            connection.sendResponse(responseBuilder.toString());
+                        }
+                        catch(IOException ex1)
+                        {
+                            Logger.getLogger(DeleCommand.class.getName()).log(
+                                Level.SEVERE,
+                                "Deletion response couldn't be sent.",
+                                ex1
+                            );
+                        }
                     }
                 }
-                catch(NonExistentMailException ex)
+                else
                 {
                     try
                     {
                         // Inform the user the mail doesn't exist
                         responseBuilder.append(Pop3Protocol.MESSAGE_ERROR);
-                        responseBuilder.append(" no such message");
+                        responseBuilder.append(" invalid mail number");
                         responseBuilder.append(Pop3Protocol.END_OF_LINE);
 
                         connection.sendResponse(responseBuilder.toString());
                     }
-                    catch(IOException ex1)
+                    catch(IOException ex)
                     {
                         Logger.getLogger(DeleCommand.class.getName()).log(
                             Level.SEVERE,
