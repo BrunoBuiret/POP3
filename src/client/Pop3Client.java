@@ -196,16 +196,16 @@ public class Pop3Client {
     }
     
     public int pop3() {
-        this.stateValidation(this.stateEnum.WaitForServer, this.read());
-
+        String serverResponse = this.read();
+        this.stateValidation(this.stateEnum.WaitForServer, serverResponse);
         if(user(this.user) != 0) {
             return -1;
         }
-        
+        System.out.println("Been here");
         if(pass(this.password) != 0) {
             return -2;
         }
-        
+        System.out.println("Been there");
         if(list() != 0) {
             return -3;
         }

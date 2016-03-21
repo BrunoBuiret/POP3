@@ -17,12 +17,11 @@ abstract class MainClient
         int port = 110;
         InetAddress ip = null;
         try {
-            ip = InetAddress.getByName("10.42.129.211");
+            ip = InetAddress.getByName("134.214.119.216");
         } catch (UnknownHostException ex) {
             Logger.getLogger(MainClient.class.getName()).log(Level.SEVERE, null, ex);
         }
-        Pop3Client client = new Pop3Client(ip, port, "thomas.arnaud", "thomas.arnaud", "C:\\Users\\thomas\\Desktop\\thomasarnaud.mbox");
-        
+        Pop3Client client = new Pop3Client(ip, port, "thomas.arnaud", "thomas.arnaud", "C:\\Users\\Alexdef74307\\Desktop\\thomasarnaud.mbox");
         client.pop3();
     }
 }
