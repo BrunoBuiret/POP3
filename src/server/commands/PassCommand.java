@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import server.Pop3Connection;
-import server.exceptions.UnknownMailBoxException;
+import common.mail.exceptions.UnknownMailBoxException;
 
 /**
  * @author Bruno Buiret <bruno.buiret@etu.univ-lyon1.fr>

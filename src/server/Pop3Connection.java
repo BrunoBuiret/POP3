@@ -8,7 +8,11 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import server.commands.AbstractPop3Command;
@@ -49,6 +53,11 @@ public class Pop3Connection extends Thread
      *
      */
     protected MailBox mailbox;
+    
+    /**
+     * 
+     */
+    protected String securityDigest;
 
     /**
      * Creates a new POP3 connection.
@@ -97,6 +106,57 @@ public class Pop3Connection extends Thread
             responseBuilder.append(" ");
             responseBuilder.append(this.server.getName());
             responseBuilder.append(" POP3 server ready");
+            
+            // Compute security digest if possible
+            try
+            {
+                // Initialize vars
+                MessageDigest md5 = MessageDigest.getInstance("MD5");
+                String processName = ManagementFactory.getRuntimeMXBean().getName();
+                int processId = Integer.parseInt(processName.substring(0, processName.indexOf("@")));
+                String host = processName.substring(processName.indexOf("@") + 1);
+                long clock = System.currentTimeMillis();
+                
+                // Build security digest
+                StringBuilder digestBuilder = new StringBuilder();
+                byte[] rawSecurityDigest = md5.digest(
+                    String.format(
+                        "<%d.%d@%s>%s",
+                        processId,
+                        clock,
+                        host,
+                        this.server.getSecret()
+                    ).getBytes(StandardCharsets.ISO_8859_1)
+                );
+                
+                for(byte b : rawSecurityDigest)
+                {
+                    digestBuilder.append(String.format("%02x", b & 0xff));
+                }
+                
+                this.securityDigest = digestBuilder.toString();
+                
+                // Add the data needed to build the security digest for the client
+                responseBuilder.append(" <");
+                responseBuilder.append(processId);
+                responseBuilder.append(".");
+                responseBuilder.append(clock);
+                responseBuilder.append("@");
+                responseBuilder.append(host);
+                responseBuilder.append(">");
+            }
+            catch (NoSuchAlgorithmException ex)
+            {
+                // MD5 message digest couldn't be fetched, disable 
+                this.securityDigest = null;
+                
+                Logger.getLogger(Pop3Connection.class.getName()).log(
+                    Level.SEVERE,
+                    "Couldn't fetch MD5 message digest.",
+                    ex
+                );
+            }
+            
             responseBuilder.append(Pop3Protocol.END_OF_LINE);
 
             // Then, send it
@@ -133,7 +193,7 @@ public class Pop3Connection extends Thread
             // Read the client's request
             request = this.readRequest();
 
-            if(!request.isEmpty())
+            if(null != request && !request.isEmpty())
             {
                 command = this.server.supportsCommand(Pop3Protocol.extractCommand(request));
 
@@ -218,15 +278,22 @@ public class Pop3Connection extends Thread
     {
         ByteArrayOutputStream dataStream;
         DataOutputStream dataWriter = new DataOutputStream(dataStream = new ByteArrayOutputStream());
+        int readByte;
 
         try
         {
             // Try reading everything
             do
             {
-                dataWriter.writeByte(this.socketReader.read());
+                readByte = this.socketReader.read();
+                dataWriter.writeByte(readByte);
             }
-            while(this.socketReader.available() > 0);
+            while(this.socketReader.available() > 0 && readByte != -1);
+            
+            if(dataStream.size() == 0)
+            {
+                return null;
+            }
 
             // Log if necessary
             if(this.server.isDebug())
@@ -281,6 +348,7 @@ public class Pop3Connection extends Thread
 
             // Then, send the response to the client
             this.socketWriter.write(dataStream.toByteArray());
+            this.socketWriter.flush();
         }
         catch(IOException ex)
         {
@@ -359,5 +427,14 @@ public class Pop3Connection extends Thread
     public void setMailBox(MailBox mailBox)
     {
         this.mailbox = mailBox;
+    }
+    
+    /**
+     * 
+     * @return 
+     */
+    public String getSecurityDigest()
+    {
+        return this.securityDigest;
     }
 }

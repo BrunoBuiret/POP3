@@ -1,5 +1,10 @@
 package common.mail;
 
+import common.mail.exceptions.FailedMailBoxUpdateException;
+import common.mail.exceptions.UnknownMailBoxException;
+import common.mail.exceptions.MarkedForDeletionException;
+import common.mail.exceptions.AlreadyMarkedForDeletionException;
+import common.mail.exceptions.NonExistentMailException;
 import common.Rfc5322;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -16,11 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import server.exceptions.AlreadyMarkedForDeletionException;
-import server.exceptions.FailedMailBoxUpdateException;
-import server.exceptions.MarkedForDeletionException;
-import server.exceptions.NonExistentMailException;
-import server.exceptions.UnknownMailBoxException;
 
 /**
  * @author Bruno Buiret <bruno.buiret@etu.univ-lyon1.fr>
@@ -55,12 +55,31 @@ public class MailBox
         this.path = mailboxPath;
         this.mailsList = new ArrayList<>();
         this.mailsToDeleteList = new ArrayList<>();
-        
-        // Test the mailbox
+    }
+    
+    /**
+     * Gets the mailbox's path.
+     * 
+     * @return The mailbox's path.
+     */
+    public String getPath()
+    {
+        return this.path;
+    }
+    
+    /**
+     * Can the mailbox be read?
+     * 
+     * @throws UnknownMailBoxException If the mailbox file doesn't exist.
+     * @throws IllegalArgumentException If the mailbox isn't an actual file.
+     * @throws IllegalArgumentException If the mailbox can't be read.
+     */
+    public void canRead()
+    {
         File mailBoxFile = new File(this.path);
         
         // Does the mailbox exist?
-        /*if(!mailBoxFile.exists())
+        if(!mailBoxFile.exists())
         {
             throw new UnknownMailBoxException(String.format(
                 "Mailbox \"%s\" doesn't exist.",
@@ -84,17 +103,7 @@ public class MailBox
                 "Mailbox \"%s\" can't be read.",
                 mailBoxFile.getAbsolutePath()
             ));
-        }*/
-    }
-    
-    /**
-     * Gets the mailbox's path.
-     * 
-     * @return The mailbox's path.
-     */
-    public String getPath()
-    {
-        return this.path;
+        }
     }
     
     /**

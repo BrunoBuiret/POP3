@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import server.Pop3Connection;
-import server.exceptions.AlreadyMarkedForDeletionException;
-import server.exceptions.NonExistentMailException;
+import common.mail.exceptions.AlreadyMarkedForDeletionException;
+import common.mail.exceptions.NonExistentMailException;
 
 /**
  * @author Bruno Buiret <bruno.buiret@etu.univ-lyon1.fr>

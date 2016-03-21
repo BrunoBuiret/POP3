@@ -1,4 +1,4 @@
-package server.exceptions;
+package common.mail.exceptions;
 
 import java.io.IOException;
 

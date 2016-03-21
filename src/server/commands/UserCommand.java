@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import server.Pop3Connection;
-import server.exceptions.UnknownMailBoxException;
+import common.mail.exceptions.UnknownMailBoxException;
 
 /**
  * @author Bruno Buiret <bruno.buiret@etu.univ-lyon1.fr>
@@ -28,6 +28,7 @@ public class UserCommand extends AbstractPop3Command
 
     /**
      * {@inheritDoc}
+     * @todo Test the mailbox exists there and not in the constructor
      */
     @Override
     public boolean handle(Pop3Connection connection, String request)
@@ -73,6 +74,7 @@ public class UserCommand extends AbstractPop3Command
                     userName +
                     ".mbox"
                 );
+                mailBox.canRead();
 
                 // Attach the mailbox to the connection
                 connection.setMailBox(mailBox);

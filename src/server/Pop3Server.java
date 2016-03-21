@@ -63,6 +63,11 @@ public class Pop3Server
     protected String mailBoxesPath;
     
     /**
+     * The server' secret used for the <code>APOP</code> command.
+     */
+    protected String secret;
+    
+    /**
      * The server' supported commands.
      */
     public Map<String, AbstractPop3Command> supportedCommands;
@@ -240,6 +245,15 @@ public class Pop3Server
     public String getMailBoxesPath()
     {
         return this.mailBoxesPath;
+    }
+    
+    /**
+     * 
+     * @return 
+     */
+    public String getSecret()
+    {
+        return this.secret;
     }
     
     /**

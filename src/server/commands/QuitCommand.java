@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import server.Pop3Connection;
-import server.exceptions.FailedMailBoxUpdateException;
+import common.mail.exceptions.FailedMailBoxUpdateException;
 
 /**
  * @author Bruno Buiret <bruno.buiret@etu.univ-lyon1.fr>
