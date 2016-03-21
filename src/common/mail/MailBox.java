@@ -60,7 +60,7 @@ public class MailBox
         File mailBoxFile = new File(this.path);
         
         // Does the mailbox exist?
-        if(!mailBoxFile.exists())
+        /*if(!mailBoxFile.exists())
         {
             throw new UnknownMailBoxException(String.format(
                 "Mailbox \"%s\" doesn't exist.",
@@ -84,7 +84,7 @@ public class MailBox
                 "Mailbox \"%s\" can't be read.",
                 mailBoxFile.getAbsolutePath()
             ));
-        }
+        }*/
     }
     
     /**
