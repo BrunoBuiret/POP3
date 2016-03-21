@@ -262,6 +262,10 @@ public class Pop3Connection extends Thread
                     }
                 }
             }
+            else if(null == request)
+            {
+                keepLooping = false;
+            }
         }
         while(keepLooping);
 
@@ -286,26 +290,28 @@ public class Pop3Connection extends Thread
             do
             {
                 readByte = this.socketReader.read();
-                dataWriter.writeByte(readByte);
+                
+                if(-1 != readByte)
+                {
+                    dataWriter.writeByte(readByte);
+                }
             }
-            while(this.socketReader.available() > 0 && readByte != -1);
-            
-            if(dataStream.size() == 0)
-            {
-                return null;
-            }
+            while(this.socketReader.available() > 0 && -1 != readByte);
 
             // Log if necessary
             if(this.server.isDebug())
             {
-                Logger.getLogger(Pop3Server.class.getName()).log(
+                Logger.getLogger(Pop3Connection.class.getName()).log(
                     Level.INFO,
                     "<- {0}:{1} {2}",
                     new Object[]{this.socket.getInetAddress(), this.socket.getPort(), new String(dataStream.toByteArray()).trim()}
                 );
             }
+            
+            // Get the byte array
+            byte[] byteArray = dataStream.toByteArray();
 
-            return new String(dataStream.toByteArray()).trim();
+            return byteArray.length > 0 ? new String(byteArray).trim() : null;
         }
         catch(IOException ex)
         {

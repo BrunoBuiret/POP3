@@ -7,11 +7,13 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import server.commands.AbstractPop3Command;
+import server.commands.ApopCommand;
 import server.commands.DeleCommand;
 import server.commands.ListCommand;
 import server.commands.PassCommand;
 import server.commands.QuitCommand;
 import server.commands.RetrCommand;
+import server.commands.RsetCommand;
 import server.commands.StatCommand;
 import server.commands.UserCommand;
 
@@ -139,11 +141,16 @@ public class Pop3Server
         this.debug = debug;
         this.mailBoxesPath = mailboxesPath;
         this.supportedCommands = new HashMap<>();
+        this.secret = "secret";
         
         // Register commands
         this.supportedCommands.put(
             "QUIT",
             new QuitCommand()
+        );
+        this.supportedCommands.put(
+            "APOP",
+            new ApopCommand()
         );
         this.supportedCommands.put(
             "USER",
@@ -168,6 +175,10 @@ public class Pop3Server
         this.supportedCommands.put(
             "DELE",
             new DeleCommand()
+        );
+        this.supportedCommands.put(
+            "RSET",
+            new RsetCommand()
         );
         
         // Start server

@@ -47,12 +47,12 @@ public class MailBox
     /**
      * Creates a new mailbox.
      * 
-     * @param mailboxPath The mailbox's path.
+     * @param path The mailbox's path.
      */
-    public MailBox(String mailboxPath)
+    public MailBox(String path)
     {
         // Initialize properties
-        this.path = mailboxPath;
+        this.path = path;
         this.mailsList = new ArrayList<>();
         this.mailsToDeleteList = new ArrayList<>();
     }
@@ -65,45 +65,6 @@ public class MailBox
     public String getPath()
     {
         return this.path;
-    }
-    
-    /**
-     * Can the mailbox be read?
-     * 
-     * @throws UnknownMailBoxException If the mailbox file doesn't exist.
-     * @throws IllegalArgumentException If the mailbox isn't an actual file.
-     * @throws IllegalArgumentException If the mailbox can't be read.
-     */
-    public void canRead()
-    {
-        File mailBoxFile = new File(this.path);
-        
-        // Does the mailbox exist?
-        if(!mailBoxFile.exists())
-        {
-            throw new UnknownMailBoxException(String.format(
-                "Mailbox \"%s\" doesn't exist.",
-                mailBoxFile.getAbsolutePath()
-            ));
-        }
-        
-        // Is it an actual file?
-        if(!mailBoxFile.isFile())
-        {
-            throw new IllegalArgumentException(String.format(
-                "Mailbox \"%s\" isn't an actual file.",
-                mailBoxFile.getAbsolutePath()
-            ));
-        }
-        
-        // Can it be read?
-        if(!mailBoxFile.canRead())
-        {
-            throw new IllegalArgumentException(String.format(
-                "Mailbox \"%s\" can't be read.",
-                mailBoxFile.getAbsolutePath()
-            ));
-        }
     }
     
     /**
@@ -218,9 +179,27 @@ public class MailBox
     }
     
     /**
+     * 
+     * @param mail
+     * @return 
+     */
+    public boolean isDeleted(Mail mail)
+    {
+        return this.mailsToDeleteList.contains(mail);
+    }
+    
+    /**
+     * 
+     */
+    public void reset()
+    {
+        this.mailsToDeleteList.clear();
+    }
+    
+    /**
      * Writes the mailbox's contents into its associated file.
      * 
-     * @throws server.exceptions.FailedMailBoxUpdateException If the mailbox can't be saved.
+     * @throws common.mail.exceptions.FailedMailBoxUpdateException
      * @throws java.io.FileNotFoundException
      */
     public void save()
@@ -356,6 +335,45 @@ public class MailBox
                     Logger.getLogger(MailBox.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+        }
+    }
+    
+    /**
+     * Can the mailbox be read?
+     * 
+     * @throws UnknownMailBoxException If the mailbox file doesn't exist.
+     * @throws IllegalArgumentException If the mailbox isn't an actual file.
+     * @throws IllegalArgumentException If the mailbox can't be read.
+     */
+    public void canRead()
+    {
+        File mailBoxFile = new File(this.path);
+        
+        // Does the mailbox exist?
+        if(!mailBoxFile.exists())
+        {
+            throw new UnknownMailBoxException(String.format(
+                "Mailbox \"%s\" doesn't exist.",
+                mailBoxFile.getAbsolutePath()
+            ));
+        }
+        
+        // Is it an actual file?
+        if(!mailBoxFile.isFile())
+        {
+            throw new IllegalArgumentException(String.format(
+                "Mailbox \"%s\" isn't an actual file.",
+                mailBoxFile.getAbsolutePath()
+            ));
+        }
+        
+        // Can it be read?
+        if(!mailBoxFile.canRead())
+        {
+            throw new IllegalArgumentException(String.format(
+                "Mailbox \"%s\" can't be read.",
+                mailBoxFile.getAbsolutePath()
+            ));
         }
     }
     

@@ -156,7 +156,7 @@ public class RetrCommand extends AbstractPop3Command
                 {
                     try
                     {
-                        // Inform the user the mail doesn't exist
+                        // Inform the user the index is invalid
                         responseBuilder.append(Pop3Protocol.MESSAGE_ERROR);
                         responseBuilder.append(" invalid mail number");
                         responseBuilder.append(Pop3Protocol.END_OF_LINE);

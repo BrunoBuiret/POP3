@@ -15,7 +15,7 @@ import server.Pop3Connection;
  * @author Thomas Arnaud <thomas.arnaud@etu.univ-lyon1.fr>
  * @author Alexis Rabilloud <alexis.rabilloud@etu.univ-lyon1.fr>
  */
-public class StatCommand extends AbstractPop3Command
+public class RsetCommand extends AbstractPop3Command
 {
     /**
      * {@inheritDoc}
@@ -38,36 +38,40 @@ public class StatCommand extends AbstractPop3Command
         
         if(null != mailBox)
         {
-            // Try reading the mailbox's contents
-            int mailsSize = 0, mailsNumber = 0;
+            // Reset the deleted messages list
+            mailBox.reset();
+            
+            // Read the mailbox's contents
+            int mailsSize = 0;
             List<Mail> mailsList = mailBox.getAll();
 
             for(Mail mail : mailsList)
             {
-                if(!mailBox.isDeleted(mail))
-                {
-                    mailsSize += mail.getSize();
-                    mailsNumber++;
-                }
+                mailsSize += mail.getSize();
             }
             
             try
             {
                 // Inform the user the mailbox has been opened
                 responseBuilder.append(Pop3Protocol.MESSAGE_OK);
+                responseBuilder.append(" maildrop has ");
+                responseBuilder.append(mailBox.getSize());
                 responseBuilder.append(" ");
-                responseBuilder.append(mailsNumber);
-                responseBuilder.append(" ");
+                responseBuilder.append(mailBox.getSize() > 1 ? "messages" : "message");
+                responseBuilder.append(" (");
                 responseBuilder.append(mailsSize);
+                responseBuilder.append(" ");
+                responseBuilder.append(mailsSize > 1 ? "octets" : "octet");
+                responseBuilder.append(")");
                 responseBuilder.append(Pop3Protocol.END_OF_LINE);
                 
                 connection.sendResponse(responseBuilder.toString());
             }
             catch(IOException ex1)
             {
-                Logger.getLogger(UserCommand.class.getName()).log(
+                Logger.getLogger(RsetCommand.class.getName()).log(
                     Level.SEVERE,
-                    "Messages list couldn't be sent.",
+                    "Reset response couldn't be sent.",
                     ex1
                 );
             }
@@ -85,9 +89,9 @@ public class StatCommand extends AbstractPop3Command
             }
             catch(IOException ex1)
             {
-                Logger.getLogger(UserCommand.class.getName()).log(
+                Logger.getLogger(RsetCommand.class.getName()).log(
                     Level.SEVERE,
-                    "Messages list couldn't be sent.",
+                    "Reset response couldn't be sent.",
                     ex1
                 );
             }
