@@ -79,23 +79,35 @@ public class Pop3Client {
         try {
             // Attente et lecture de la réponse
             InputStream input = socket.getInputStream();
-            DataOutputStream writer = new DataOutputStream(new ByteArrayOutputStream());
+            // DataOutputStream writer = new DataOutputStream(new ByteArrayOutputStream());
             StringBuilder response = new StringBuilder();
             int readByte;
 
             // Lecture de l'en-tête
             do {
                 // Lecture d'un octet
-                writer.write(readByte = input.read());
-                response.append((char) readByte);
-            } while (input.available() > 0 && response.toString().lastIndexOf("\r\n\r\n") == -1);
+                readByte = input.read();
+                
+                if(readByte != -1)
+                {
+                    // writer.write(readByte = input.read());
+                    response.append((char) readByte);
+                }
+            } while (input.available() > 0 && readByte != -1);
 
             return response.toString();
-        } catch (IOException e) {
-            if (socket != null) {
-                try {
+            
+        }
+        catch(IOException e)
+        {
+            if (socket != null)
+            {
+                try
+                {
                     socket.close();
-                } catch (IOException ex) {
+                }
+                catch (IOException ex)
+                {
                 }
             }
         }
@@ -139,8 +151,8 @@ public class Pop3Client {
     
     public int user(String username) {
         this.sendResponse(encodeResponse("USER " + username + Pop3Protocol.END_OF_LINE));
-        
-        return this.stateValidation(this.stateEnum.WaitForUserNameValidation, this.read());
+        String response = this.read();
+        return this.stateValidation(this.stateEnum.WaitForUserNameValidation, response);
     }
             
     public int pass(String password) {
@@ -154,11 +166,13 @@ public class Pop3Client {
     public int list() {
         this.sendResponse(encodeResponse("LIST" + Pop3Protocol.END_OF_LINE));
         String serverResponse = this.read();
-        int messageNbr = Integer.parseInt(serverResponse.split(" ")[1]);
+        int messageNbr = Integer.parseInt(serverResponse.split(" ")[3]);
+        
+        String[] response = serverResponse.split("\r\n");
         
         System.out.println("You have " + messageNbr + " messages.");
         for(int i = 0; i < messageNbr; i++) {
-            System.out.println(this.read());
+            System.out.println(response[i+1]);
         }
         this.nbMessages = messageNbr;
         
@@ -169,12 +183,12 @@ public class Pop3Client {
         this.sendResponse(encodeResponse("RETR " + i));
         String serverResponse = this.read();
         int is_valid = this.stateValidation(this.stateEnum.WaitForMessageReception, serverResponse);
-        String message = this.read();
         Mail mail = new Mail();
-        
+        System.out.println(serverResponse);
         try {
-            mail.addHeader(message.split("<CR><LF>\n<CR><LF>")[0]);
-            mail.setContents(message.split("<CR><LF>\n<CR><LF>")[1]);
+            mail.addHeader(serverResponse.split("\r\n\r\n")[0]);
+            mail.setContents(serverResponse.split("\r\n\r\n")[1]);
+            this.mailbox.add(mail);
             this.mailbox.save();
         } catch (FailedMailBoxUpdateException ex) {
             Logger.getLogger(Pop3Client.class.getName()).log(Level.SEVERE, null, ex);
@@ -198,24 +212,24 @@ public class Pop3Client {
     public int pop3() {
         String serverResponse = this.read();
         this.stateValidation(this.stateEnum.WaitForServer, serverResponse);
-        if(user(this.user) != 0) {
+        if(user(this.user) == 0) {
             return -1;
         }
         System.out.println("Been here");
-        if(pass(this.password) != 0) {
+        if(pass(this.password) == 0) {
             return -2;
         }
         System.out.println("Been there");
-        if(list() != 0) {
+        if(list() == 0) {
             return -3;
         }
         
-        for (int i = 0; i < this.nbMessages; i++) {
-            if(retrieve(i) != 0) {
+        for (int i = 1; i < this.nbMessages + 1; i++) {
+            if(retrieve(i) == 0) {
                 return -4;
             }
             if(this.deletionParameter) {
-                if(delete(i) != 0) {
+                if(delete(i) == 0) {
                     return -5;
                 }
             }

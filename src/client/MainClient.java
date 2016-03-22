@@ -17,11 +17,11 @@ abstract class MainClient
         try
         {
             Pop3Client client = new Pop3Client(
-                InetAddress.getByName("127.0.0.1"),
-                110,
-                "bruno.buiret",
-                "bruno.buiret",
-                "D:\\bruno.buiret.lmbox"
+                InetAddress.getByName("134.214.119.102"),
+                11000,
+                "thomas.arnaud",
+                "thomas.arnaud",
+                "C:\\Users\\Alexdef74307\\Desktop\\bruno.buiret.lmbox"
             );
             client.pop3();
         }

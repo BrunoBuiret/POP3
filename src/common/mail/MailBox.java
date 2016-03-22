@@ -221,6 +221,7 @@ public class MailBox
         }
         
         // Can it be written?
+        /*
         if(!mailBoxFile.canWrite())
         {
             throw new IllegalArgumentException(String.format(
@@ -228,6 +229,7 @@ public class MailBox
                 mailBoxFile.getAbsolutePath()
             ));
         }
+        */
         
         // Remove the emails marked for deletion but clone it first in case of a bug
         List<Mail> clonedMailsList = new ArrayList<>(this.mailsList);
