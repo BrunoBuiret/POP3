@@ -12,7 +12,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import server.exceptions.FailedMailBoxUpdateException;
+import common.mail.exceptions.FailedMailBoxUpdateException;
 
 /**
  * @author Bruno Buiret <bruno.buiret@etu.univ-lyon1.fr>

@@ -10,9 +10,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import server.Pop3Connection;
-import server.exceptions.UnknownMailBoxException;
+import common.mail.exceptions.UnknownMailBoxException;
 
 /**
+ * Implements the <code>PASS</code> POP3 command.
+ * 
  * @author Bruno Buiret <bruno.buiret@etu.univ-lyon1.fr>
  * @author Thomas Arnaud <thomas.arnaud@etu.univ-lyon1.fr>
  * @author Alexis Rabilloud <alexis.rabilloud@etu.univ-lyon1.fr>
@@ -21,7 +23,6 @@ public class PassCommand extends AbstractPop3Command
 {
     /**
      * {@inheritDoc}
-     * @todo Also test if there was a <code>USER</code> command sent right before.
      */
     @Override
     public boolean isValid(Pop3Connection connection)
@@ -38,132 +39,158 @@ public class PassCommand extends AbstractPop3Command
         // Initialize vars
         StringBuilder responseBuilder = new StringBuilder();
 
-        // Has the password been given?
-        if(
-            request.length() == 4
-            || (request.length() > 4 && request.substring(4).trim().isEmpty())
-        )
+        if(null != connection.getMailBox())
         {
-            try
+            // Has the password been given?
+            if(
+                request.length() == 4
+                || (request.length() > 4 && request.substring(4).trim().isEmpty())
+            )
             {
-                // Remove the mailbox
-                connection.setMailBox(null);
-                
-                // Inform the user they have provide the password
-                responseBuilder.append(Pop3Protocol.MESSAGE_ERROR);
-                responseBuilder.append(" you have to provide the password");
-                responseBuilder.append(Pop3Protocol.END_OF_LINE);
-
-                connection.sendResponse(responseBuilder.toString());
-            }
-            catch(IOException ex)
-            {
-                Logger.getLogger(UserCommand.class.getName()).log(
-                    Level.SEVERE,
-                    "Authentication response couldn't be sent.",
-                    ex
-                );
-            }
-        }
-        else
-        {
-            // Extract the password from the request
-            String password = request.substring(5).trim();
-            MailBox mailBox = connection.getMailBox();
-
-            if(null != mailBox)
-            {
-                // Is the password correct for this mailbox?
-                if(mailBox.getUserName().equals(password)) // @todo Find a better password, maybe, write it at the top of the file?
+                try
                 {
-                    try
+                    // Remove the mailbox
+                    connection.setMailBox(null);
+
+                    // Inform the user they have provide the password
+                    responseBuilder.append(Pop3Protocol.MESSAGE_ERROR);
+                    responseBuilder.append(" you have to provide the password");
+                    responseBuilder.append(Pop3Protocol.END_OF_LINE);
+
+                    connection.sendResponse(responseBuilder.toString());
+                }
+                catch(IOException ex)
+                {
+                    Logger.getLogger(PassCommand.class.getName()).log(
+                        Level.SEVERE,
+                        "Authentication response couldn't be sent.",
+                        ex
+                    );
+                }
+            }
+            else
+            {
+                // Extract the password from the request
+                String password = request.substring(5).trim();
+                MailBox mailBox = connection.getMailBox();
+
+                if(null != mailBox)
+                {
+                    // Is the password correct for this mailbox?
+                    if(mailBox.getUserName().equals(password)) // @todo Find a better password, maybe, write it at the top of the file?
                     {
-                        // @todo Lock the mailbox
-
-                        // Try reading the mailbox's contents
-                        mailBox.read();
-                        int mailsSize = 0;
-                        List<Mail> mailsList = mailBox.getAll();
-                        
-                        for(Mail mail : mailsList)
-                        {
-                            mailsSize += mail.getSize();
-                        }
-
-                        // Change the connection's current state
-                        connection.setCurrentState(Pop3State.TRANSACTION);
-                        
                         try
                         {
-                            // Inform the user the mailbox has been opened
-                            responseBuilder.append(Pop3Protocol.MESSAGE_OK);
-                            responseBuilder.append(" maildrop has ");
-                            responseBuilder.append(mailBox.getSize());
-                            responseBuilder.append(" ");
-                            responseBuilder.append(mailBox.getSize() > 1 ? "messages" : "message");
-                            responseBuilder.append(" (");
-                            responseBuilder.append(mailsSize);
-                            responseBuilder.append(" ");
-                            responseBuilder.append(mailsSize > 1 ? "octets" : "octet");
-                            responseBuilder.append(")");
-                            responseBuilder.append(Pop3Protocol.END_OF_LINE);
+                            // @todo Lock the mailbox
 
-                            connection.sendResponse(responseBuilder.toString());
+                            // Try reading the mailbox's contents
+                            mailBox.read();
+                            int mailsSize = 0;
+                            List<Mail> mailsList = mailBox.getAll();
+
+                            for(Mail mail : mailsList)
+                            {
+                                mailsSize += mail.getSize();
+                            }
+
+                            // Change the connection's current state
+                            connection.setCurrentState(Pop3State.TRANSACTION);
+
+                            try
+                            {
+                                // Inform the user the mailbox has been opened
+                                responseBuilder.append(Pop3Protocol.MESSAGE_OK);
+                                responseBuilder.append(" maildrop has ");
+                                responseBuilder.append(mailBox.getSize());
+                                responseBuilder.append(" ");
+                                responseBuilder.append(mailBox.getSize() > 1 ? "messages" : "message");
+                                responseBuilder.append(" (");
+                                responseBuilder.append(mailsSize);
+                                responseBuilder.append(" ");
+                                responseBuilder.append(mailsSize > 1 ? "octets" : "octet");
+                                responseBuilder.append(")");
+                                responseBuilder.append(Pop3Protocol.END_OF_LINE);
+
+                                connection.sendResponse(responseBuilder.toString());
+                            }
+                            catch(IOException ex1)
+                            {
+                                Logger.getLogger(PassCommand.class.getName()).log(
+                                    Level.SEVERE,
+                                    "Authentication response couldn't be sent.",
+                                    ex1
+                                );
+                            }
                         }
-                        catch(IOException ex1)
+                        catch(FileNotFoundException | UnknownMailBoxException ex)
                         {
-                            Logger.getLogger(UserCommand.class.getName()).log(
-                                Level.SEVERE,
-                                "Authentication response couldn't be sent.",
-                                ex1
-                            );
+                            try
+                            {
+                                // Remove the mailbox
+                                connection.setMailBox(null);
+
+                                // Inform the user the mailbox doesn't exist
+                                responseBuilder.append(Pop3Protocol.MESSAGE_ERROR);
+                                responseBuilder.append(" ");
+                                responseBuilder.append(mailBox.getUserName());
+                                responseBuilder.append(" is now an invalid mailbox");
+                                responseBuilder.append(Pop3Protocol.END_OF_LINE);
+
+                                connection.sendResponse(responseBuilder.toString());
+                            }
+                            catch(IOException ex1)
+                            {
+                                Logger.getLogger(PassCommand.class.getName()).log(
+                                    Level.SEVERE,
+                                    "Authentication response couldn't be sent.",
+                                    ex1
+                                );
+                            }
+                        }
+                        catch(IllegalArgumentException ex)
+                        {
+                            try
+                            {
+                                // Remove the mailbox
+                                connection.setMailBox(null);
+
+                                // Inform the user the mailbox couldn't be opened
+                                responseBuilder.append(Pop3Protocol.MESSAGE_ERROR);
+                                responseBuilder.append(" unable to open mailbox");
+                                responseBuilder.append(Pop3Protocol.END_OF_LINE);
+
+                                connection.sendResponse(responseBuilder.toString());
+                            }
+                            catch(IOException ex1)
+                            {
+                                Logger.getLogger(PassCommand.class.getName()).log(
+                                    Level.SEVERE,
+                                    "Authentication response couldn't be sent.",
+                                    ex1
+                                );
+                            }
                         }
                     }
-                    catch(FileNotFoundException | UnknownMailBoxException ex)
+                    else
                     {
                         try
                         {
                             // Remove the mailbox
                             connection.setMailBox(null);
 
-                            // Inform the user the mailbox doesn't exist
+                            // Inform the user, their password is invalid
                             responseBuilder.append(Pop3Protocol.MESSAGE_ERROR);
-                            responseBuilder.append(" ");
-                            responseBuilder.append(mailBox.getUserName());
-                            responseBuilder.append(" is now an invalid mailbox");
+                            responseBuilder.append(" invalid password");
                             responseBuilder.append(Pop3Protocol.END_OF_LINE);
 
                             connection.sendResponse(responseBuilder.toString());
                         }
-                        catch(IOException ex1)
+                        catch(IOException ex)
                         {
-                            Logger.getLogger(UserCommand.class.getName()).log(
+                            Logger.getLogger(PassCommand.class.getName()).log(
                                 Level.SEVERE,
                                 "Authentication response couldn't be sent.",
-                                ex1
-                            );
-                        }
-                    }
-                    catch(IllegalArgumentException ex)
-                    {
-                        try
-                        {
-                            // Remove the mailbox
-                            connection.setMailBox(null);
-
-                            // Inform the user the mailbox couldn't be opened
-                            responseBuilder.append(Pop3Protocol.MESSAGE_ERROR);
-                            responseBuilder.append(" unable to open mailbox");
-                            responseBuilder.append(Pop3Protocol.END_OF_LINE);
-
-                            connection.sendResponse(responseBuilder.toString());
-                        }
-                        catch(IOException ex1)
-                        {
-                            Logger.getLogger(UserCommand.class.getName()).log(
-                                Level.SEVERE,
-                                "Authentication response couldn't be sent.",
-                                ex1
+                                ex
                             );
                         }
                     }
@@ -172,19 +199,15 @@ public class PassCommand extends AbstractPop3Command
                 {
                     try
                     {
-                        // Remove the mailbox
-                        connection.setMailBox(null);
-                        
-                        // Inform the user, their password is invalid
                         responseBuilder.append(Pop3Protocol.MESSAGE_ERROR);
-                        responseBuilder.append(" invalid password");
+                        responseBuilder.append(" you have to provide the username before");
                         responseBuilder.append(Pop3Protocol.END_OF_LINE);
 
                         connection.sendResponse(responseBuilder.toString());
                     }
                     catch(IOException ex)
                     {
-                        Logger.getLogger(UserCommand.class.getName()).log(
+                        Logger.getLogger(PassCommand.class.getName()).log(
                             Level.SEVERE,
                             "Authentication response couldn't be sent.",
                             ex
@@ -192,24 +215,25 @@ public class PassCommand extends AbstractPop3Command
                     }
                 }
             }
-            else
+        }
+        else
+        {
+            try
             {
-                try
-                {
-                    responseBuilder.append(Pop3Protocol.MESSAGE_ERROR);
-                    responseBuilder.append(" you have to provide the username before");
-                    responseBuilder.append(Pop3Protocol.END_OF_LINE);
-
-                    connection.sendResponse(responseBuilder.toString());
-                }
-                catch(IOException ex)
-                {
-                    Logger.getLogger(UserCommand.class.getName()).log(
-                        Level.SEVERE,
-                        "Authentication response couldn't be sent.",
-                        ex
-                    );
-                }
+                // Inform the user there are no associated mailbox
+                responseBuilder.append(Pop3Protocol.MESSAGE_ERROR);
+                responseBuilder.append(" no mailbox associated");
+                responseBuilder.append(Pop3Protocol.END_OF_LINE);
+                
+                connection.sendResponse(responseBuilder.toString());
+            }
+            catch(IOException ex1)
+            {
+                Logger.getLogger(PassCommand.class.getName()).log(
+                    Level.SEVERE,
+                    "Authentication response couldn't be sent.",
+                    ex1
+                );
             }
         }
 

@@ -1,4 +1,4 @@
-package server.exceptions;
+package common.mail.exceptions;
 
 /**
  * @author Bruno Buiret <bruno.buiret@etu.univ-lyon1.fr>

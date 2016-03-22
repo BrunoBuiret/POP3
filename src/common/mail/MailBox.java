@@ -1,5 +1,10 @@
 package common.mail;
 
+import common.mail.exceptions.FailedMailBoxUpdateException;
+import common.mail.exceptions.UnknownMailBoxException;
+import common.mail.exceptions.MarkedForDeletionException;
+import common.mail.exceptions.AlreadyMarkedForDeletionException;
+import common.mail.exceptions.NonExistentMailException;
 import common.Rfc5322;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -16,11 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import server.exceptions.AlreadyMarkedForDeletionException;
-import server.exceptions.FailedMailBoxUpdateException;
-import server.exceptions.MarkedForDeletionException;
-import server.exceptions.NonExistentMailException;
-import server.exceptions.UnknownMailBoxException;
 
 /**
  * @author Bruno Buiret <bruno.buiret@etu.univ-lyon1.fr>
@@ -47,44 +47,14 @@ public class MailBox
     /**
      * Creates a new mailbox.
      * 
-     * @param mailboxPath The mailbox's path.
+     * @param path The mailbox's path.
      */
-    public MailBox(String mailboxPath)
+    public MailBox(String path)
     {
         // Initialize properties
-        this.path = mailboxPath;
+        this.path = path;
         this.mailsList = new ArrayList<>();
         this.mailsToDeleteList = new ArrayList<>();
-        
-        // Test the mailbox
-        File mailBoxFile = new File(this.path);
-        
-        // Does the mailbox exist?
-        /*if(!mailBoxFile.exists())
-        {
-            throw new UnknownMailBoxException(String.format(
-                "Mailbox \"%s\" doesn't exist.",
-                mailBoxFile.getAbsolutePath()
-            ));
-        }
-        
-        // Is it an actual file?
-        if(!mailBoxFile.isFile())
-        {
-            throw new IllegalArgumentException(String.format(
-                "Mailbox \"%s\" isn't an actual file.",
-                mailBoxFile.getAbsolutePath()
-            ));
-        }
-        
-        // Can it be read?
-        if(!mailBoxFile.canRead())
-        {
-            throw new IllegalArgumentException(String.format(
-                "Mailbox \"%s\" can't be read.",
-                mailBoxFile.getAbsolutePath()
-            ));
-        }*/
     }
     
     /**
@@ -111,7 +81,8 @@ public class MailBox
     }
     
     /**
-     * Gets the number of mail in this mailbox.
+     * Gets the number of mail in this mailbox, including the ones marked for
+     * deletion.
      * 
      * @return The number of mails.
      */
@@ -123,7 +94,7 @@ public class MailBox
     /**
      * Adds a mail to the mailbox.
      * 
-     * @param mail The mail to add
+     * @param mail The mail to add.
      */
     public void add(Mail mail)
     {
@@ -134,9 +105,9 @@ public class MailBox
      * Gets one mail from the mailbox.
      * 
      * @param index The mail's index.
-     * @return The wanted mail if it exists, <code>null</code> otherwise.
-     * @throws NonExistentMailException If the mail associated to <code>index</code> doesn't exist.
-     * @throws MarkedForDeletionException If the mail has been marked for deletion.
+     * @return The wanted mail if it exists.
+     * @throws common.mail.exceptions.NonExistentMailException If the mail associated to <code>index</code> doesn't exist.
+     * @throws common.mail.exceptions.MarkedForDeletionException If the mail has been marked for deletion.
      */
     public Mail get(int index)
     {
@@ -166,8 +137,9 @@ public class MailBox
     }
     
     /**
+     * Gets every mail in this mailbox.
      * 
-     * @return 
+     * @return The list of mails.
      */
     public List<Mail> getAll()
     {
@@ -178,8 +150,8 @@ public class MailBox
      * Marks a mail for deletion in this mailbox.
      * 
      * @param index The mail's index.
-     * @throws NonExistentMailException If the mail associated to <code>index</code> doesn't exist.
-     * @throws AlreadyMarkedForDeletionException If the mail is already marked for deletion.
+     * @throws common.mail.exceptions.NonExistentMailException If the mail associated to <code>index</code> doesn't exist.
+     * @throws common.mail.exceptions.AlreadyMarkedForDeletionException If the mail is already marked for deletion.
      */
     public void delete(int index)
     {
@@ -209,13 +181,33 @@ public class MailBox
     }
     
     /**
+     * Tests if a mail has been marked for deletion.
+     * 
+     * @param mail The mail to test.
+     * @return <code>true</code> if the mail is marked for deletion, <code>false</code> otherwise.
+     */
+    public boolean isDeleted(Mail mail)
+    {
+        return this.mailsToDeleteList.contains(mail);
+    }
+    
+    /**
+     * Resets the mailbox by unmarking the mails marked for deletion.
+     */
+    public void reset()
+    {
+        this.mailsToDeleteList.clear();
+    }
+    
+    /**
      * Writes the mailbox's contents into its associated file.
      * 
-     * @throws server.exceptions.FailedMailBoxUpdateException If the mailbox can't be saved.
-     * @throws java.io.FileNotFoundException
+     * @throws common.mail.exceptions.FailedMailBoxUpdateException If the mailbox couldn't be saved.
+     * @throws java.io.FileNotFoundException If the mailbox doesn't exist.
+     * @throws java.lang.IllegalArgumentException If the mailbox isn't a file or can't be written.
      */
     public void save()
-    throws FailedMailBoxUpdateException, FileNotFoundException
+    throws FailedMailBoxUpdateException, FileNotFoundException, IllegalArgumentException
     {
         File mailBoxFile = new File(this.path);
         
@@ -351,12 +343,54 @@ public class MailBox
     }
     
     /**
+     * Can the mailbox be read?
+     * 
+     * @throws common.mail.exceptions.UnknownMailBoxException If the mailbox file doesn't exist.
+     * @throws java.lang.IllegalArgumentException If the mailbox isn't an actual file.
+     * @throws java.lang.IllegalArgumentException If the mailbox can't be read.
+     */
+    public void canRead()
+    throws UnknownMailBoxException, IllegalArgumentException
+    {
+        File mailBoxFile = new File(this.path);
+        
+        // Does the mailbox exist?
+        if(!mailBoxFile.exists())
+        {
+            throw new UnknownMailBoxException(String.format(
+                "Mailbox \"%s\" doesn't exist.",
+                mailBoxFile.getAbsolutePath()
+            ));
+        }
+        
+        // Is it an actual file?
+        if(!mailBoxFile.isFile())
+        {
+            throw new IllegalArgumentException(String.format(
+                "Mailbox \"%s\" isn't an actual file.",
+                mailBoxFile.getAbsolutePath()
+            ));
+        }
+        
+        // Can it be read?
+        if(!mailBoxFile.canRead())
+        {
+            throw new IllegalArgumentException(String.format(
+                "Mailbox \"%s\" can't be read.",
+                mailBoxFile.getAbsolutePath()
+            ));
+        }
+    }
+    
+    /**
      * Reads the mailbox's contents from its associated file.
      * 
-     * @throws java.io.FileNotFoundException
+     * @throws common.mail.exceptions.UnknownMailBoxException If the mailbox doesn't exist.
+     * @throws java.io.FileNotFoundException If the mailbox doesn't exist.
+     * @throws java.lang.IllegalArgumentException If the mailbox isn't a file or can't be read.
      */
     public void read()
-    throws FileNotFoundException
+    throws FileNotFoundException, IllegalArgumentException
     {
         File mailBoxFile = new File(this.path);
         

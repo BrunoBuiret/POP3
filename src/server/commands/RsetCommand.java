@@ -11,13 +11,13 @@ import java.util.logging.Logger;
 import server.Pop3Connection;
 
 /**
- * Implements the <code>STAT</code> POP3 command.
+ * Implements the <code>RSET</code> POP3 command.
  * 
  * @author Bruno Buiret <bruno.buiret@etu.univ-lyon1.fr>
  * @author Thomas Arnaud <thomas.arnaud@etu.univ-lyon1.fr>
  * @author Alexis Rabilloud <alexis.rabilloud@etu.univ-lyon1.fr>
  */
-public class StatCommand extends AbstractPop3Command
+public class RsetCommand extends AbstractPop3Command
 {
     /**
      * {@inheritDoc}
@@ -40,37 +40,41 @@ public class StatCommand extends AbstractPop3Command
         
         if(null != mailBox)
         {
-            // Try reading the mailbox's contents
-            int mailsSize = 0, mailsNumber = 0;
+            // Reset the deleted messages list
+            mailBox.reset();
+            
+            // Read the mailbox's contents
+            int mailsSize = 0;
             List<Mail> mailsList = mailBox.getAll();
 
             for(Mail mail : mailsList)
             {
-                if(!mailBox.isDeleted(mail))
-                {
-                    mailsSize += mail.getSize();
-                    mailsNumber++;
-                }
+                mailsSize += mail.getSize();
             }
             
             try
             {
-                // Inform the user of the mailbox's number of mais and total size
+                // Inform the user the mailbox has been opened
                 responseBuilder.append(Pop3Protocol.MESSAGE_OK);
+                responseBuilder.append(" maildrop has ");
+                responseBuilder.append(mailBox.getSize());
                 responseBuilder.append(" ");
-                responseBuilder.append(mailsNumber);
-                responseBuilder.append(" ");
+                responseBuilder.append(mailBox.getSize() > 1 ? "messages" : "message");
+                responseBuilder.append(" (");
                 responseBuilder.append(mailsSize);
+                responseBuilder.append(" ");
+                responseBuilder.append(mailsSize > 1 ? "octets" : "octet");
+                responseBuilder.append(")");
                 responseBuilder.append(Pop3Protocol.END_OF_LINE);
                 
                 connection.sendResponse(responseBuilder.toString());
             }
-            catch(IOException ex)
+            catch(IOException ex1)
             {
-                Logger.getLogger(StatCommand.class.getName()).log(
+                Logger.getLogger(RsetCommand.class.getName()).log(
                     Level.SEVERE,
-                    "Statistics response couldn't be sent.",
-                    ex
+                    "Reset response couldn't be sent.",
+                    ex1
                 );
             }
         }
@@ -85,12 +89,12 @@ public class StatCommand extends AbstractPop3Command
                 
                 connection.sendResponse(responseBuilder.toString());
             }
-            catch(IOException ex)
+            catch(IOException ex1)
             {
-                Logger.getLogger(StatCommand.class.getName()).log(
+                Logger.getLogger(RsetCommand.class.getName()).log(
                     Level.SEVERE,
-                    "Statistics response couldn't be sent.",
-                    ex
+                    "Reset response couldn't be sent.",
+                    ex1
                 );
             }
         }
