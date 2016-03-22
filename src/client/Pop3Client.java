@@ -25,7 +25,7 @@ public class Pop3Client {
     private InetAddress ipServer;
     private int portServer;
     private String user;
-    private boolean deletionParameter = false;
+    private boolean deletionParameter = true;
     private String password;
     private MailBox mailbox;
     private int nbMessages = 0;
@@ -184,10 +184,18 @@ public class Pop3Client {
         String serverResponse = this.read();
         int is_valid = this.stateValidation(this.stateEnum.WaitForMessageReception, serverResponse);
         Mail mail = new Mail();
-        System.out.println(serverResponse);
         try {
-            mail.addHeader(serverResponse.split("\r\n\r\n")[0]);
-            mail.setContents(serverResponse.split("\r\n\r\n")[1]);
+            String rawMail = serverResponse.substring(serverResponse.indexOf(Pop3Protocol.END_OF_LINE) + 2);
+            String[] mailHeaders = rawMail.split(Pop3Protocol.END_OF_LINE + Pop3Protocol.END_OF_LINE)[0].split(Pop3Protocol.END_OF_LINE);
+            String mailBody = rawMail.split(Pop3Protocol.END_OF_LINE + Pop3Protocol.END_OF_LINE)[1];
+            
+            for(int j = 0; j < mailHeaders.length; j++)
+            {
+                mail.addHeader(mailHeaders[j]);
+            }
+            
+            mail.setContents(mailBody.substring(0, mailBody.indexOf(Pop3Protocol.END_OF_LINE + "." + Pop3Protocol.END_OF_LINE)));
+            
             this.mailbox.add(mail);
             this.mailbox.save();
         } catch (FailedMailBoxUpdateException ex) {
@@ -215,11 +223,9 @@ public class Pop3Client {
         if(user(this.user) == 0) {
             return -1;
         }
-        System.out.println("Been here");
         if(pass(this.password) == 0) {
             return -2;
         }
-        System.out.println("Been there");
         if(list() == 0) {
             return -3;
         }
