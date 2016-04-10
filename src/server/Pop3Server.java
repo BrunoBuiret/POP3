@@ -1,11 +1,15 @@
 package server;
 
 import java.io.IOException;
-import java.net.ServerSocket;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
 import server.commands.AbstractPop3Command;
 import server.commands.ApopCommand;
 import server.commands.DeleCommand;
@@ -42,7 +46,7 @@ public class Pop3Server
     /**
      * The server' socket.
      */
-    protected ServerSocket socket;
+    protected SSLServerSocket socket;
 
     /**
      * The server's name.
@@ -82,10 +86,10 @@ public class Pop3Server
     public Pop3Server()
     {
         this(
-                Pop3Server.DEFAULT_NAME,
-                Pop3Server.DEFAULT_PORT,
-                Pop3Server.DEFAULT_MAILBOXES_PATH,
-                false
+            Pop3Server.DEFAULT_NAME,
+            Pop3Server.DEFAULT_PORT,
+            Pop3Server.DEFAULT_MAILBOXES_PATH,
+            false
         );
     }
 
@@ -98,10 +102,10 @@ public class Pop3Server
     public Pop3Server(String name)
     {
         this(
-                name,
-                Pop3Server.DEFAULT_PORT,
-                Pop3Server.DEFAULT_MAILBOXES_PATH,
-                false
+            name,
+            Pop3Server.DEFAULT_PORT,
+            Pop3Server.DEFAULT_MAILBOXES_PATH,
+            false
         );
     }
 
@@ -114,10 +118,10 @@ public class Pop3Server
     public Pop3Server(int port)
     {
         this(
-                Pop3Server.DEFAULT_NAME,
-                port,
-                Pop3Server.DEFAULT_MAILBOXES_PATH,
-                false
+            Pop3Server.DEFAULT_NAME,
+            port,
+            Pop3Server.DEFAULT_MAILBOXES_PATH,
+            false
         );
     }
 
@@ -130,10 +134,10 @@ public class Pop3Server
     public Pop3Server(String name, int port)
     {
         this(
-                name,
-                port,
-                Pop3Server.DEFAULT_MAILBOXES_PATH,
-                false
+            name,
+            port,
+            Pop3Server.DEFAULT_MAILBOXES_PATH,
+            false
         );
     }
 
@@ -147,10 +151,10 @@ public class Pop3Server
     public Pop3Server(String name, int port, String mailboxesPath)
     {
         this(
-                name,
-                port,
-                mailboxesPath,
-                false
+            name,
+            port,
+            mailboxesPath,
+            false
         );
     }
 
@@ -173,53 +177,70 @@ public class Pop3Server
 
         // Register commands
         this.supportedCommands.put(
-                "QUIT",
-                new QuitCommand()
+            "QUIT",
+            new QuitCommand()
         );
         this.supportedCommands.put(
-                "APOP",
-                new ApopCommand()
+            "APOP",
+            new ApopCommand()
         );
         this.supportedCommands.put(
-                "USER",
-                new UserCommand()
+            "USER",
+            new UserCommand()
         );
         this.supportedCommands.put(
-                "PASS",
-                new PassCommand()
+            "PASS",
+            new PassCommand()
         );
         this.supportedCommands.put(
-                "LIST",
-                new ListCommand()
+            "LIST",
+            new ListCommand()
         );
         this.supportedCommands.put(
-                "STAT",
-                new StatCommand()
+            "STAT",
+            new StatCommand()
         );
         this.supportedCommands.put(
-                "RETR",
-                new RetrCommand()
+            "RETR",
+            new RetrCommand()
         );
         this.supportedCommands.put(
-                "DELE",
-                new DeleCommand()
+            "DELE",
+            new DeleCommand()
         );
         this.supportedCommands.put(
-                "RSET",
-                new RsetCommand()
+            "RSET",
+            new RsetCommand()
         );
 
         // Start server
         try
         {
-            this.socket = new ServerSocket(this.port);
+            SSLServerSocketFactory factory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+
+            //this.socket = new ServerSocket(this.port);
+            this.socket = (SSLServerSocket) factory.createServerSocket(this.port);
+
+            // Determine which cipher suites can be used
+            List<String> cipherSuitesList = new ArrayList<>(Arrays.asList(this.socket.getSupportedCipherSuites()));
+            List<String> usableCipherSuites = new ArrayList<>();
+
+            for(String cipherSuite : cipherSuitesList)
+            {
+                if(cipherSuite.contains("anon"))
+                {
+                    usableCipherSuites.add(cipherSuite);
+                }
+            }
+
+            this.socket.setEnabledCipherSuites(usableCipherSuites.toArray(new String[usableCipherSuites.size()]));
         }
         catch(IOException ex)
         {
             Logger.getLogger(Pop3Server.class.getName()).log(
-                    Level.SEVERE,
-                    "Couldn't start server socket.",
-                    ex
+                Level.SEVERE,
+                "Couldn't start server socket.",
+                ex
             );
         }
     }
@@ -239,9 +260,9 @@ public class Pop3Server
             catch(IOException ex)
             {
                 Logger.getLogger(Pop3Server.class.getName()).log(
-                        Level.SEVERE,
-                        "Cannot accept new connection.",
-                        ex
+                    Level.SEVERE,
+                    "Cannot accept new connection.",
+                    ex
                 );
             }
         }
@@ -306,7 +327,7 @@ public class Pop3Server
     public AbstractPop3Command supportsCommand(String command)
     {
         return this.supportedCommands.containsKey(command)
-                ? this.supportedCommands.get(command)
-                : null;
+            ? this.supportedCommands.get(command)
+            : null;
     }
 }

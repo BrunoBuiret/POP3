@@ -8,7 +8,6 @@ import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import common.mail.exceptions.FailedMailBoxUpdateException;
@@ -17,6 +16,11 @@ import java.io.BufferedOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 
 /**
  * @author Bruno Buiret <bruno.buiret@etu.univ-lyon1.fr>
@@ -38,7 +42,7 @@ public class Pop3Client
         WaitForExitConfirm;
     };
 
-    protected Socket socket;
+    protected SSLSocket socket;
     protected InetAddress ipServer;
     protected int portServer;
     protected boolean deletionParameter = true;
@@ -79,9 +83,24 @@ public class Pop3Client
         try
         {
             // Create socket and fetch reader and writer
-            this.socket = new Socket(ipServer, portServer);
+            SSLSocketFactory factory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+            this.socket = (SSLSocket) factory.createSocket(ipServer, portServer);
             this.socketReader = new BufferedInputStream(this.socket.getInputStream());
             this.socketWriter = new BufferedOutputStream(this.socket.getOutputStream());
+
+            // Determine which cipher suites can be used
+            List<String> cipherSuitesList = new ArrayList<>(Arrays.asList(this.socket.getSupportedCipherSuites()));
+            List<String> usableCipherSuites = new ArrayList<>();
+
+            for(String cipherSuite : cipherSuitesList)
+            {
+                if(cipherSuite.contains("anon"))
+                {
+                    usableCipherSuites.add(cipherSuite);
+                }
+            }
+
+            this.socket.setEnabledCipherSuites(usableCipherSuites.toArray(new String[usableCipherSuites.size()]));
 
             // Read greetings
             String greetingsResponse = this.readResponse();
@@ -94,10 +113,10 @@ public class Pop3Client
                     MessageDigest md5 = MessageDigest.getInstance("MD5");
                     StringBuilder digestBuilder = new StringBuilder();
                     byte[] rawSecurityDigest = md5.digest((greetingsResponse.substring(
-                            greetingsResponse.indexOf("<"),
-                            greetingsResponse.indexOf(">") + 1
+                        greetingsResponse.indexOf("<"),
+                        greetingsResponse.indexOf(">") + 1
                     )
-                            + this.secret).getBytes(StandardCharsets.ISO_8859_1));
+                        + this.secret).getBytes(StandardCharsets.ISO_8859_1));
 
                     for(byte b : rawSecurityDigest)
                     {

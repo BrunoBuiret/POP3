@@ -17,9 +17,9 @@ abstract class MainClient
         try
         {
             Pop3Client client = new Pop3Client(
-                    InetAddress.getByName("127.0.0.1"),
-                    110,
-                    "D:\\bruno.buiret.lmbox"
+                InetAddress.getByName("127.0.0.1"),
+                110,
+                "D:\\bruno.buiret.lmbox"
             );
             client.scenario();
         }

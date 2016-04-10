@@ -124,16 +124,16 @@ public class MailBox
             else
             {
                 throw new MarkedForDeletionException(String.format(
-                        "Mail #%d is marked for deletion.",
-                        index
+                    "Mail #%d is marked for deletion.",
+                    index
                 ));
             }
         }
         else
         {
             throw new NonExistentMailException(String.format(
-                    "Mail #%d doesn't exist.",
-                    index
+                "Mail #%d doesn't exist.",
+                index
             ));
         }
     }
@@ -170,16 +170,16 @@ public class MailBox
             else
             {
                 throw new AlreadyMarkedForDeletionException(String.format(
-                        "Mail #%d is already marked for deletion.",
-                        index
+                    "Mail #%d is already marked for deletion.",
+                    index
                 ));
             }
         }
         else
         {
             throw new NonExistentMailException(String.format(
-                    "Mail #%d doesn't exist.",
-                    index
+                "Mail #%d doesn't exist.",
+                index
             ));
         }
     }
@@ -214,7 +214,7 @@ public class MailBox
      * can't be written.
      */
     public void save()
-            throws FailedMailBoxUpdateException, FileNotFoundException, IllegalArgumentException
+        throws FailedMailBoxUpdateException, FileNotFoundException, IllegalArgumentException
     {
         File mailBoxFile = new File(this.path);
 
@@ -222,8 +222,8 @@ public class MailBox
         if(mailBoxFile.exists() && !mailBoxFile.isFile())
         {
             throw new IllegalArgumentException(String.format(
-                    "Mailbox \"%s\" isn't a file.",
-                    mailBoxFile.getAbsolutePath()
+                "Mailbox \"%s\" isn't a file.",
+                mailBoxFile.getAbsolutePath()
             ));
         }
 
@@ -277,9 +277,9 @@ public class MailBox
                     if(bodyLength - currentIndex >= 76)
                     {
                         bodyFragments.add(
-                                mail.getContents().substring(
-                                        currentIndex, currentIndex + 76
-                                )
+                            mail.getContents().substring(
+                                currentIndex, currentIndex + 76
+                            )
                         );
 
                         currentIndex += 76;
@@ -287,19 +287,19 @@ public class MailBox
                     else
                     {
                         bodyFragments.add(
-                                mail.getContents().substring(
-                                        currentIndex
-                                )
+                            mail.getContents().substring(
+                                currentIndex
+                            )
                         );
                         currentIndex = mail.getContents().length();
                     }
                 }
 
                 dataWriter.writeBytes(
-                        String.join(
-                                "\r\n",
-                                bodyFragments
-                        )
+                    String.join(
+                        "\r\n",
+                        bodyFragments
+                    )
                 );
 
                 // End the body
@@ -324,8 +324,8 @@ public class MailBox
 
             // Throw another exception
             FailedMailBoxUpdateException exception = new FailedMailBoxUpdateException(String.format(
-                    "Mailbox \"%s\" couldn't be saved.",
-                    mailBoxFile.getAbsolutePath()
+                "Mailbox \"%s\" couldn't be saved.",
+                mailBoxFile.getAbsolutePath()
             ));
             exception.addSuppressed(ex);
 
@@ -360,7 +360,7 @@ public class MailBox
      * @throws java.lang.IllegalArgumentException If the mailbox can't be read.
      */
     public void canRead()
-            throws UnknownMailBoxException, IllegalArgumentException
+        throws UnknownMailBoxException, IllegalArgumentException
     {
         File mailBoxFile = new File(this.path);
 
@@ -368,8 +368,8 @@ public class MailBox
         if(!mailBoxFile.exists())
         {
             throw new UnknownMailBoxException(String.format(
-                    "Mailbox \"%s\" doesn't exist.",
-                    mailBoxFile.getAbsolutePath()
+                "Mailbox \"%s\" doesn't exist.",
+                mailBoxFile.getAbsolutePath()
             ));
         }
 
@@ -377,8 +377,8 @@ public class MailBox
         if(!mailBoxFile.isFile())
         {
             throw new IllegalArgumentException(String.format(
-                    "Mailbox \"%s\" isn't an actual file.",
-                    mailBoxFile.getAbsolutePath()
+                "Mailbox \"%s\" isn't an actual file.",
+                mailBoxFile.getAbsolutePath()
             ));
         }
 
@@ -386,8 +386,8 @@ public class MailBox
         if(!mailBoxFile.canRead())
         {
             throw new IllegalArgumentException(String.format(
-                    "Mailbox \"%s\" can't be read.",
-                    mailBoxFile.getAbsolutePath()
+                "Mailbox \"%s\" can't be read.",
+                mailBoxFile.getAbsolutePath()
             ));
         }
     }
@@ -402,7 +402,7 @@ public class MailBox
      * can't be read.
      */
     public void read()
-            throws FileNotFoundException, IllegalArgumentException
+        throws FileNotFoundException, IllegalArgumentException
     {
         File mailBoxFile = new File(this.path);
 
@@ -410,8 +410,8 @@ public class MailBox
         if(!mailBoxFile.exists())
         {
             throw new UnknownMailBoxException(String.format(
-                    "Mailbox \"%s\" doesn't exist.",
-                    mailBoxFile.getAbsolutePath()
+                "Mailbox \"%s\" doesn't exist.",
+                mailBoxFile.getAbsolutePath()
             ));
         }
 
@@ -419,8 +419,8 @@ public class MailBox
         if(!mailBoxFile.isFile())
         {
             throw new IllegalArgumentException(String.format(
-                    "Mailbox \"%s\" isn't an actual file.",
-                    mailBoxFile.getAbsolutePath()
+                "Mailbox \"%s\" isn't an actual file.",
+                mailBoxFile.getAbsolutePath()
             ));
         }
 
@@ -428,8 +428,8 @@ public class MailBox
         if(!mailBoxFile.canRead())
         {
             throw new IllegalArgumentException(String.format(
-                    "Mailbox \"%s\" can't be read.",
-                    mailBoxFile.getAbsolutePath()
+                "Mailbox \"%s\" can't be read.",
+                mailBoxFile.getAbsolutePath()
             ));
         }
 

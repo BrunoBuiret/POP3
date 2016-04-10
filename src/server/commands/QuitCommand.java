@@ -83,18 +83,18 @@ public class QuitCommand extends AbstractPop3Command
                 catch(IOException ex1)
                 {
                     Logger.getLogger(QuitCommand.class.getName()).log(
-                            Level.SEVERE,
-                            "Signing off response couldn't be sent to the user.",
-                            ex1
+                        Level.SEVERE,
+                        "Signing off response couldn't be sent to the user.",
+                        ex1
                     );
                 }
             }
             catch(IOException ex)
             {
                 Logger.getLogger(QuitCommand.class.getName()).log(
-                        Level.SEVERE,
-                        "Signing off response couldn't be sent to the user.",
-                        ex
+                    Level.SEVERE,
+                    "Signing off response couldn't be sent to the user.",
+                    ex
                 );
             }
         }
@@ -112,9 +112,9 @@ public class QuitCommand extends AbstractPop3Command
             catch(IOException ex1)
             {
                 Logger.getLogger(QuitCommand.class.getName()).log(
-                        Level.SEVERE,
-                        "Signing off response couldn't be sent to the user.",
-                        ex1
+                    Level.SEVERE,
+                    "Signing off response couldn't be sent to the user.",
+                    ex1
                 );
             }
         }
