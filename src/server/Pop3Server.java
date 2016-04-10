@@ -28,111 +28,118 @@ public class Pop3Server
      * Default server name.
      */
     public static final String DEFAULT_NAME = "<NAME>";
-    
+
     /**
      * Default server port.
      */
     public static final int DEFAULT_PORT = 110;
-    
+
     /**
      * Default path to the mailboxes.
      */
     public static final String DEFAULT_MAILBOXES_PATH = ".";
-    
+
     /**
      * The server' socket.
      */
     protected ServerSocket socket;
-    
+
     /**
      * The server's name.
      */
     protected String name;
-    
+
     /**
      * The server's port.
      */
     protected int port;
-    
+
     /**
      * The server's debug mode.
      */
     protected boolean debug;
-    
+
     /**
      * The server's mailboxes' folder path.
      */
     protected String mailBoxesPath;
-    
+
     /**
      * The server' secret used for the <code>APOP</code> command.
      */
     protected String secret;
-    
+
     /**
      * The server' supported commands.
      */
     public Map<String, AbstractPop3Command> supportedCommands;
-    
+
     /**
      * Creates a new POP3 server using the default name and port,
-     * <code>Pop3Server.DEFAULT_NAME</code> and <code>Pop3Server.DEFAULT_PORT</code>.
+     * <code>Pop3Server.DEFAULT_NAME</code> and
+     * <code>Pop3Server.DEFAULT_PORT</code>.
      */
     public Pop3Server()
     {
         this(
-            Pop3Server.DEFAULT_NAME,
-            Pop3Server.DEFAULT_PORT,
-            Pop3Server.DEFAULT_MAILBOXES_PATH,
-            false
+                Pop3Server.DEFAULT_NAME,
+                Pop3Server.DEFAULT_PORT,
+                Pop3Server.DEFAULT_MAILBOXES_PATH,
+                false
         );
     }
-    
+
     /**
      * Creates a new POP3 server using a custom name and the default port,
      * <code>Pop3Server.DEFAULT_PORT</code>.
-     * 
+     *
      * @param name The server's name.
      */
     public Pop3Server(String name)
     {
         this(
-            name,
-            Pop3Server.DEFAULT_PORT,
-            Pop3Server.DEFAULT_MAILBOXES_PATH,
-            false
+                name,
+                Pop3Server.DEFAULT_PORT,
+                Pop3Server.DEFAULT_MAILBOXES_PATH,
+                false
         );
     }
-    
+
     /**
      * Creates a new POP3 server using the default name and a custom port,
      * <code>Pop3Server.DEFAULT_NAME</code>.
-     * 
+     *
      * @param port The server's port.
      */
     public Pop3Server(int port)
     {
         this(
-            Pop3Server.DEFAULT_NAME,
-            port,
-            Pop3Server.DEFAULT_MAILBOXES_PATH,
-            false
+                Pop3Server.DEFAULT_NAME,
+                port,
+                Pop3Server.DEFAULT_MAILBOXES_PATH,
+                false
         );
     }
-    
+
     /**
-     * 
+     * Creates a new POP3 server using a custom name and custom port.
+     *
      * @param name The server's name.
      * @param port The server's port.
      */
     public Pop3Server(String name, int port)
     {
-        this(name, port, Pop3Server.DEFAULT_MAILBOXES_PATH, false);
+        this(
+                name,
+                port,
+                Pop3Server.DEFAULT_MAILBOXES_PATH,
+                false
+        );
     }
-    
+
     /**
      * Creates a new POP3 server using a custom name and a custom port.
-     * 
+     *
      * @param name The server's name.
      * @param port The server's port.
      * @param mailboxesPath The mailboxes' folder path.
@@ -140,16 +147,16 @@ public class Pop3Server
     public Pop3Server(String name, int port, String mailboxesPath)
     {
         this(
-            name,
-            port,
-            mailboxesPath,
-            false
+                name,
+                port,
+                mailboxesPath,
+                false
         );
     }
-    
+
     /**
      * Creates a new POP3 server using a custom name and port.
-     * 
+     *
      * @param name The server's name.
      * @param port The server's port.
      * @param debug The server's debug mode.
@@ -163,45 +170,45 @@ public class Pop3Server
         this.mailBoxesPath = mailboxesPath;
         this.supportedCommands = new HashMap<>();
         this.secret = "secret";
-        
+
         // Register commands
         this.supportedCommands.put(
-            "QUIT",
-            new QuitCommand()
+                "QUIT",
+                new QuitCommand()
         );
         this.supportedCommands.put(
-            "APOP",
-            new ApopCommand()
+                "APOP",
+                new ApopCommand()
         );
         this.supportedCommands.put(
-            "USER",
-            new UserCommand()
+                "USER",
+                new UserCommand()
         );
         this.supportedCommands.put(
-            "PASS",
-            new PassCommand()
+                "PASS",
+                new PassCommand()
         );
         this.supportedCommands.put(
-            "LIST",
-            new ListCommand()
+                "LIST",
+                new ListCommand()
         );
         this.supportedCommands.put(
-            "STAT",
-            new StatCommand()
+                "STAT",
+                new StatCommand()
         );
         this.supportedCommands.put(
-            "RETR",
-            new RetrCommand()
+                "RETR",
+                new RetrCommand()
         );
         this.supportedCommands.put(
-            "DELE",
-            new DeleCommand()
+                "DELE",
+                new DeleCommand()
         );
         this.supportedCommands.put(
-            "RSET",
-            new RsetCommand()
+                "RSET",
+                new RsetCommand()
         );
-        
+
         // Start server
         try
         {
@@ -210,13 +217,13 @@ public class Pop3Server
         catch(IOException ex)
         {
             Logger.getLogger(Pop3Server.class.getName()).log(
-                Level.SEVERE,
-                "Couldn't start server socket.",
-                ex
+                    Level.SEVERE,
+                    "Couldn't start server socket.",
+                    ex
             );
         }
     }
-    
+
     /**
      * Launches the server and runs it.
      */
@@ -232,75 +239,74 @@ public class Pop3Server
             catch(IOException ex)
             {
                 Logger.getLogger(Pop3Server.class.getName()).log(
-                    Level.SEVERE,
-                    "Cannot accept new connection.",
-                    ex
+                        Level.SEVERE,
+                        "Cannot accept new connection.",
+                        ex
                 );
             }
         }
     }
-    
+
     /**
      * Gets the server's name.
-     * 
+     *
      * @return The server's name.
      */
     public String getName()
     {
         return this.name;
     }
-    
+
     /**
      * Gets the server's port.
-     * 
+     *
      * @return The server's port.
      */
     public int getPort()
     {
         return this.port;
     }
-    
+
     /**
      * Gets the server's debug mode.
-     * 
+     *
      * @return The server's debug mode.
      */
     public boolean isDebug()
     {
         return this.debug;
     }
-    
+
     /**
      * Gets the server's mailboxes' folder path.
-     * 
+     *
      * @return The server's mailboxes' folder path.
      */
     public String getMailBoxesPath()
     {
         return this.mailBoxesPath;
     }
-    
+
     /**
      * Gets the secret used with the <code>APOP</code> command.
-     * 
+     *
      * @return The secret.
      */
     public String getSecret()
     {
         return this.secret;
     }
-    
+
     /**
      * Gets a command if it is supported.
-     * 
+     *
      * @param command The command's name.
      * @return The command, <code>null</code> otherwise.
      */
     public AbstractPop3Command supportsCommand(String command)
     {
         return this.supportedCommands.containsKey(command)
-            ? this.supportedCommands.get(command)
-            : null
-        ;
+                ? this.supportedCommands.get(command)
+                : null;
     }
 }

@@ -9,7 +9,7 @@ public class NonExistentMailException extends IndexOutOfBoundsException
 {
     /**
      * Creates a new <code>NonExistentMailException</code> exception.
-     * 
+     *
      * @param s The detailed message.
      */
     public NonExistentMailException(String s)

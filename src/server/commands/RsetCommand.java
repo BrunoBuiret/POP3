@@ -12,7 +12,7 @@ import server.Pop3Connection;
 
 /**
  * Implements the <code>RSET</code> POP3 command.
- * 
+ *
  * @author Bruno Buiret <bruno.buiret@etu.univ-lyon1.fr>
  * @author Thomas Arnaud <thomas.arnaud@etu.univ-lyon1.fr>
  * @author Alexis Rabilloud <alexis.rabilloud@etu.univ-lyon1.fr>
@@ -37,12 +37,12 @@ public class RsetCommand extends AbstractPop3Command
         // Initialize vars
         MailBox mailBox = connection.getMailBox();
         StringBuilder responseBuilder = new StringBuilder();
-        
+
         if(null != mailBox)
         {
             // Reset the deleted messages list
             mailBox.reset();
-            
+
             // Read the mailbox's contents
             int mailsSize = 0;
             List<Mail> mailsList = mailBox.getAll();
@@ -51,7 +51,7 @@ public class RsetCommand extends AbstractPop3Command
             {
                 mailsSize += mail.getSize();
             }
-            
+
             try
             {
                 // Inform the user the mailbox has been opened
@@ -66,15 +66,15 @@ public class RsetCommand extends AbstractPop3Command
                 responseBuilder.append(mailsSize > 1 ? "octets" : "octet");
                 responseBuilder.append(")");
                 responseBuilder.append(Pop3Protocol.END_OF_LINE);
-                
+
                 connection.sendResponse(responseBuilder.toString());
             }
             catch(IOException ex1)
             {
                 Logger.getLogger(RsetCommand.class.getName()).log(
-                    Level.SEVERE,
-                    "Reset response couldn't be sent.",
-                    ex1
+                        Level.SEVERE,
+                        "Reset response couldn't be sent.",
+                        ex1
                 );
             }
         }
@@ -86,19 +86,19 @@ public class RsetCommand extends AbstractPop3Command
                 responseBuilder.append(Pop3Protocol.MESSAGE_ERROR);
                 responseBuilder.append(" no mailbox associated");
                 responseBuilder.append(Pop3Protocol.END_OF_LINE);
-                
+
                 connection.sendResponse(responseBuilder.toString());
             }
             catch(IOException ex1)
             {
                 Logger.getLogger(RsetCommand.class.getName()).log(
-                    Level.SEVERE,
-                    "Reset response couldn't be sent.",
-                    ex1
+                        Level.SEVERE,
+                        "Reset response couldn't be sent.",
+                        ex1
                 );
             }
         }
-        
+
         return true;
     }
 }

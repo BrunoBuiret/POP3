@@ -11,7 +11,7 @@ import common.mail.exceptions.FailedMailBoxUpdateException;
 
 /**
  * Implements the <code>QUIT</code> POP3 command.
- * 
+ *
  * @author Bruno Buiret <bruno.buiret@etu.univ-lyon1.fr>
  * @author Thomas Arnaud <thomas.arnaud@etu.univ-lyon1.fr>
  * @author Alexis Rabilloud <alexis.rabilloud@etu.univ-lyon1.fr>
@@ -36,10 +36,10 @@ public class QuitCommand extends AbstractPop3Command
         // Initialize vars
         StringBuilder responseBuilder = new StringBuilder();
         MailBox mailBox = connection.getMailBox();
-        
+
         // Change connection's current state
         connection.setCurrentState(Pop3State.UPDATE);
-        
+
         if(null != mailBox)
         {
             try
@@ -83,18 +83,18 @@ public class QuitCommand extends AbstractPop3Command
                 catch(IOException ex1)
                 {
                     Logger.getLogger(QuitCommand.class.getName()).log(
-                        Level.SEVERE,
-                        "Signing off response couldn't be sent to the user.",
-                        ex1
+                            Level.SEVERE,
+                            "Signing off response couldn't be sent to the user.",
+                            ex1
                     );
                 }
             }
             catch(IOException ex)
             {
                 Logger.getLogger(QuitCommand.class.getName()).log(
-                    Level.SEVERE,
-                    "Signing off response couldn't be sent to the user.",
-                    ex
+                        Level.SEVERE,
+                        "Signing off response couldn't be sent to the user.",
+                        ex
                 );
             }
         }
@@ -106,19 +106,19 @@ public class QuitCommand extends AbstractPop3Command
                 responseBuilder.append(Pop3Protocol.MESSAGE_ERROR);
                 responseBuilder.append(" no mailbox associated");
                 responseBuilder.append(Pop3Protocol.END_OF_LINE);
-                
+
                 connection.sendResponse(responseBuilder.toString());
             }
             catch(IOException ex1)
             {
                 Logger.getLogger(QuitCommand.class.getName()).log(
-                    Level.SEVERE,
-                    "Signing off response couldn't be sent to the user.",
-                    ex1
+                        Level.SEVERE,
+                        "Signing off response couldn't be sent to the user.",
+                        ex1
                 );
             }
         }
-        
+
         return false;
     }
 }

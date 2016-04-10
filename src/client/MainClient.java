@@ -10,20 +10,18 @@ import java.util.logging.Logger;
  * @author Thomas Arnaud <thomas.arnaud@etu.univ-lyon1.fr>
  * @author Alexis Rabilloud <alexis.rabilloud@etu.univ-lyon1.fr>
  */
-abstract class MainClient 
+abstract class MainClient
 {
     public static void main(String[] args)
     {
         try
         {
             Pop3Client client = new Pop3Client(
-                InetAddress.getByName("134.214.119.102"),
-                11000,
-                "bruno.buiret",
-                "bruno.buiret",
-                "C:\\Users\\Alexdef74307\\Desktop\\bruno.buiret.lmbox"
+                    InetAddress.getByName("127.0.0.1"),
+                    110,
+                    "D:\\bruno.buiret.lmbox"
             );
-            client.pop3();
+            client.scenario();
         }
         catch(UnknownHostException ex)
         {

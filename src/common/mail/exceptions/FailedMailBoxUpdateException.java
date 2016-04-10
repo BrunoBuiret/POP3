@@ -11,7 +11,7 @@ public class FailedMailBoxUpdateException extends IOException
 {
     /**
      * Creates a new <code>FailedMailBoxUpdateException</code> exception.
-     * 
+     *
      * @param s The detailed message.
      */
     public FailedMailBoxUpdateException(String s)

@@ -11,7 +11,7 @@ import common.mail.exceptions.NonExistentMailException;
 
 /**
  * Implements the <code>DELE</code> POP3 command.
- * 
+ *
  * @author Bruno Buiret <bruno.buiret@etu.univ-lyon1.fr>
  * @author Thomas Arnaud <thomas.arnaud@etu.univ-lyon1.fr>
  * @author Alexis Rabilloud <alexis.rabilloud@etu.univ-lyon1.fr>
@@ -35,14 +35,12 @@ public class DeleCommand extends AbstractPop3Command
     {
         // Initialize vars
         StringBuilder responseBuilder = new StringBuilder();
-        
+
         if(null != connection.getMailBox())
         {
             // Has the mail's index been given?
-            if(
-                request.length() == 4
-                || (request.length() > 4 && request.substring(4).trim().isEmpty())
-            )
+            if(request.length() == 4
+                    || (request.length() > 4 && request.substring(4).trim().isEmpty()))
             {
                 try
                 {
@@ -56,9 +54,9 @@ public class DeleCommand extends AbstractPop3Command
                 catch(IOException ex)
                 {
                     Logger.getLogger(DeleCommand.class.getName()).log(
-                        Level.SEVERE,
-                        "Deletion response couldn't be sent.",
-                        ex
+                            Level.SEVERE,
+                            "Deletion response couldn't be sent.",
+                            ex
                     );
                 }
             }
@@ -90,9 +88,9 @@ public class DeleCommand extends AbstractPop3Command
                             catch(IOException ex)
                             {
                                 Logger.getLogger(DeleCommand.class.getName()).log(
-                                    Level.SEVERE,
-                                    "Deletion response couldn't be sent.",
-                                    ex
+                                        Level.SEVERE,
+                                        "Deletion response couldn't be sent.",
+                                        ex
                                 );
                             }
                         }
@@ -112,9 +110,9 @@ public class DeleCommand extends AbstractPop3Command
                             catch(IOException ex1)
                             {
                                 Logger.getLogger(DeleCommand.class.getName()).log(
-                                    Level.SEVERE,
-                                    "Deletion response couldn't be sent.",
-                                    ex1
+                                        Level.SEVERE,
+                                        "Deletion response couldn't be sent.",
+                                        ex1
                                 );
                             }
                         }
@@ -132,9 +130,9 @@ public class DeleCommand extends AbstractPop3Command
                             catch(IOException ex1)
                             {
                                 Logger.getLogger(DeleCommand.class.getName()).log(
-                                    Level.SEVERE,
-                                    "Deletion response couldn't be sent.",
-                                    ex1
+                                        Level.SEVERE,
+                                        "Deletion response couldn't be sent.",
+                                        ex1
                                 );
                             }
                         }
@@ -153,9 +151,9 @@ public class DeleCommand extends AbstractPop3Command
                         catch(IOException ex)
                         {
                             Logger.getLogger(DeleCommand.class.getName()).log(
-                                Level.SEVERE,
-                                "Deletion response couldn't be sent.",
-                                ex
+                                    Level.SEVERE,
+                                    "Deletion response couldn't be sent.",
+                                    ex
                             );
                         }
                     }
@@ -174,9 +172,9 @@ public class DeleCommand extends AbstractPop3Command
                     catch(IOException ex1)
                     {
                         Logger.getLogger(DeleCommand.class.getName()).log(
-                            Level.SEVERE,
-                            "Deletion response couldn't be sent.",
-                            ex
+                                Level.SEVERE,
+                                "Deletion response couldn't be sent.",
+                                ex
                         );
                     }
                 }
@@ -190,19 +188,19 @@ public class DeleCommand extends AbstractPop3Command
                 responseBuilder.append(Pop3Protocol.MESSAGE_ERROR);
                 responseBuilder.append(" no mailbox associated");
                 responseBuilder.append(Pop3Protocol.END_OF_LINE);
-                
+
                 connection.sendResponse(responseBuilder.toString());
             }
             catch(IOException ex)
             {
                 Logger.getLogger(DeleCommand.class.getName()).log(
-                    Level.SEVERE,
-                    "Deletion response couldn't be sent.",
-                    ex
+                        Level.SEVERE,
+                        "Deletion response couldn't be sent.",
+                        ex
                 );
             }
         }
-        
+
         return true;
     }
 }

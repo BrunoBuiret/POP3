@@ -12,7 +12,7 @@ import server.Pop3Connection;
 
 /**
  * Implements the <code>STAT</code> POP3 command.
- * 
+ *
  * @author Bruno Buiret <bruno.buiret@etu.univ-lyon1.fr>
  * @author Thomas Arnaud <thomas.arnaud@etu.univ-lyon1.fr>
  * @author Alexis Rabilloud <alexis.rabilloud@etu.univ-lyon1.fr>
@@ -37,7 +37,7 @@ public class StatCommand extends AbstractPop3Command
         // Initialize vars
         MailBox mailBox = connection.getMailBox();
         StringBuilder responseBuilder = new StringBuilder();
-        
+
         if(null != mailBox)
         {
             // Try reading the mailbox's contents
@@ -52,7 +52,7 @@ public class StatCommand extends AbstractPop3Command
                     mailsNumber++;
                 }
             }
-            
+
             try
             {
                 // Inform the user of the mailbox's number of mais and total size
@@ -62,15 +62,15 @@ public class StatCommand extends AbstractPop3Command
                 responseBuilder.append(" ");
                 responseBuilder.append(mailsSize);
                 responseBuilder.append(Pop3Protocol.END_OF_LINE);
-                
+
                 connection.sendResponse(responseBuilder.toString());
             }
             catch(IOException ex)
             {
                 Logger.getLogger(StatCommand.class.getName()).log(
-                    Level.SEVERE,
-                    "Statistics response couldn't be sent.",
-                    ex
+                        Level.SEVERE,
+                        "Statistics response couldn't be sent.",
+                        ex
                 );
             }
         }
@@ -82,19 +82,19 @@ public class StatCommand extends AbstractPop3Command
                 responseBuilder.append(Pop3Protocol.MESSAGE_ERROR);
                 responseBuilder.append(" no mailbox associated");
                 responseBuilder.append(Pop3Protocol.END_OF_LINE);
-                
+
                 connection.sendResponse(responseBuilder.toString());
             }
             catch(IOException ex)
             {
                 Logger.getLogger(StatCommand.class.getName()).log(
-                    Level.SEVERE,
-                    "Statistics response couldn't be sent.",
-                    ex
+                        Level.SEVERE,
+                        "Statistics response couldn't be sent.",
+                        ex
                 );
             }
         }
-        
+
         return true;
     }
 }

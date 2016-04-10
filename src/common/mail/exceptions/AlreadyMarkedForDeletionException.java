@@ -9,7 +9,7 @@ public class AlreadyMarkedForDeletionException extends MarkedForDeletionExceptio
 {
     /**
      * Creates a new <code>AlreadyMarkedForDeletionException</code> exception.
-     * 
+     *
      * @param s The detailed message.
      */
     public AlreadyMarkedForDeletionException(String s)

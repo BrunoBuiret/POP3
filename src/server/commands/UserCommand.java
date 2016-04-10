@@ -28,6 +28,7 @@ public class UserCommand extends AbstractPop3Command
 
     /**
      * {@inheritDoc}
+     *
      * @todo Test the mailbox exists there and not in the constructor
      */
     @Override
@@ -37,10 +38,8 @@ public class UserCommand extends AbstractPop3Command
         StringBuilder responseBuilder = new StringBuilder();
 
         // Has the user's name been given?
-        if(
-            request.length() == 4
-            || (request.length() > 4 && request.substring(4).trim().isEmpty())
-        )
+        if(request.length() == 4
+                || (request.length() > 4 && request.substring(4).trim().isEmpty()))
         {
             try
             {
@@ -54,9 +53,9 @@ public class UserCommand extends AbstractPop3Command
             catch(IOException ex)
             {
                 Logger.getLogger(UserCommand.class.getName()).log(
-                    Level.SEVERE,
-                    "Authentication response couldn't be sent.",
-                    ex
+                        Level.SEVERE,
+                        "Authentication response couldn't be sent.",
+                        ex
                 );
             }
         }
@@ -69,10 +68,10 @@ public class UserCommand extends AbstractPop3Command
             {
                 // Try opening the mailbox and reading its contents
                 MailBox mailBox = new MailBox(
-                    connection.getServer().getMailBoxesPath() +
-                    File.separator +
-                    userName +
-                    ".mbox"
+                        connection.getServer().getMailBoxesPath()
+                        + File.separator
+                        + userName
+                        + ".mbox"
                 );
                 mailBox.canRead();
 
@@ -104,9 +103,9 @@ public class UserCommand extends AbstractPop3Command
                 catch(IOException ex1)
                 {
                     Logger.getLogger(UserCommand.class.getName()).log(
-                        Level.SEVERE,
-                        "Authentication response couldn't be sent.",
-                        ex1
+                            Level.SEVERE,
+                            "Authentication response couldn't be sent.",
+                            ex1
                     );
                 }
             }
@@ -126,18 +125,18 @@ public class UserCommand extends AbstractPop3Command
                 catch(IOException ex1)
                 {
                     Logger.getLogger(UserCommand.class.getName()).log(
-                        Level.SEVERE,
-                        "Authentication response couldn't be sent.",
-                        ex1
+                            Level.SEVERE,
+                            "Authentication response couldn't be sent.",
+                            ex1
                     );
                 }
             }
             catch(IOException ex)
             {
                 Logger.getLogger(UserCommand.class.getName()).log(
-                    Level.SEVERE,
-                    "Authentication response couldn't be sent.",
-                    ex
+                        Level.SEVERE,
+                        "Authentication response couldn't be sent.",
+                        ex
                 );
             }
         }
