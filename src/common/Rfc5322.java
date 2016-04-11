@@ -7,6 +7,7 @@ package common;
  */
 public abstract class Rfc5322
 {
+
     /**
      * The ASCII value for CR (<code>\r</code>).
      */

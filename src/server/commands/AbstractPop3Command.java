@@ -9,6 +9,7 @@ import server.Pop3Connection;
  */
 public abstract class AbstractPop3Command
 {
+
     /**
      * Tests if the command can be used at this moment.
      *

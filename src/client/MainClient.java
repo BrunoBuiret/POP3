@@ -12,14 +12,15 @@ import java.util.logging.Logger;
  */
 abstract class MainClient
 {
+
     public static void main(String[] args)
     {
         try
         {
             Pop3Client client = new Pop3Client(
-                    InetAddress.getByName("127.0.0.1"),
-                    110,
-                    "D:\\bruno.buiret.lmbox"
+                InetAddress.getByName("127.0.0.1"),
+                110,
+                "D:\\bruno.buiret.lmbox"
             );
             client.scenario();
         }

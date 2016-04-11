@@ -19,6 +19,7 @@ import server.Pop3Connection;
  */
 public class RsetCommand extends AbstractPop3Command
 {
+
     /**
      * {@inheritDoc}
      */
@@ -72,9 +73,9 @@ public class RsetCommand extends AbstractPop3Command
             catch(IOException ex1)
             {
                 Logger.getLogger(RsetCommand.class.getName()).log(
-                        Level.SEVERE,
-                        "Reset response couldn't be sent.",
-                        ex1
+                    Level.SEVERE,
+                    "Reset response couldn't be sent.",
+                    ex1
                 );
             }
         }
@@ -92,9 +93,9 @@ public class RsetCommand extends AbstractPop3Command
             catch(IOException ex1)
             {
                 Logger.getLogger(RsetCommand.class.getName()).log(
-                        Level.SEVERE,
-                        "Reset response couldn't be sent.",
-                        ex1
+                    Level.SEVERE,
+                    "Reset response couldn't be sent.",
+                    ex1
                 );
             }
         }

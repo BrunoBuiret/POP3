@@ -19,6 +19,7 @@ import server.Pop3Connection;
  */
 public class StatCommand extends AbstractPop3Command
 {
+
     /**
      * {@inheritDoc}
      */
@@ -68,9 +69,9 @@ public class StatCommand extends AbstractPop3Command
             catch(IOException ex)
             {
                 Logger.getLogger(StatCommand.class.getName()).log(
-                        Level.SEVERE,
-                        "Statistics response couldn't be sent.",
-                        ex
+                    Level.SEVERE,
+                    "Statistics response couldn't be sent.",
+                    ex
                 );
             }
         }
@@ -88,9 +89,9 @@ public class StatCommand extends AbstractPop3Command
             catch(IOException ex)
             {
                 Logger.getLogger(StatCommand.class.getName()).log(
-                        Level.SEVERE,
-                        "Statistics response couldn't be sent.",
-                        ex
+                    Level.SEVERE,
+                    "Statistics response couldn't be sent.",
+                    ex
                 );
             }
         }

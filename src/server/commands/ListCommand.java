@@ -21,6 +21,7 @@ import server.Pop3Connection;
  */
 public class ListCommand extends AbstractPop3Command
 {
+
     /**
      * {@inheritDoc}
      */
@@ -71,9 +72,9 @@ public class ListCommand extends AbstractPop3Command
                             catch(IOException ex)
                             {
                                 Logger.getLogger(ListCommand.class.getName()).log(
-                                        Level.SEVERE,
-                                        "Mails list response couldn't be sent.",
-                                        ex
+                                    Level.SEVERE,
+                                    "Mails list response couldn't be sent.",
+                                    ex
                                 );
                             }
                         }
@@ -93,9 +94,9 @@ public class ListCommand extends AbstractPop3Command
                             catch(IOException ex1)
                             {
                                 Logger.getLogger(ListCommand.class.getName()).log(
-                                        Level.SEVERE,
-                                        "Mails list response couldn't be sent.",
-                                        ex1
+                                    Level.SEVERE,
+                                    "Mails list response couldn't be sent.",
+                                    ex1
                                 );
                             }
                         }
@@ -113,9 +114,9 @@ public class ListCommand extends AbstractPop3Command
                             catch(IOException ex1)
                             {
                                 Logger.getLogger(ListCommand.class.getName()).log(
-                                        Level.SEVERE,
-                                        "Mails list response couldn't be sent.",
-                                        ex1
+                                    Level.SEVERE,
+                                    "Mails list response couldn't be sent.",
+                                    ex1
                                 );
                             }
                         }
@@ -134,9 +135,9 @@ public class ListCommand extends AbstractPop3Command
                         catch(IOException ex)
                         {
                             Logger.getLogger(ListCommand.class.getName()).log(
-                                    Level.SEVERE,
-                                    "Mails list response couldn't be sent.",
-                                    ex
+                                Level.SEVERE,
+                                "Mails list response couldn't be sent.",
+                                ex
                             );
                         }
                     }
@@ -155,9 +156,9 @@ public class ListCommand extends AbstractPop3Command
                     catch(IOException ex1)
                     {
                         Logger.getLogger(ListCommand.class.getName()).log(
-                                Level.SEVERE,
-                                "Mails list response couldn't be sent.",
-                                ex
+                            Level.SEVERE,
+                            "Mails list response couldn't be sent.",
+                            ex
                         );
                     }
                 }
@@ -211,9 +212,9 @@ public class ListCommand extends AbstractPop3Command
                 catch(IOException ex)
                 {
                     Logger.getLogger(ListCommand.class.getName()).log(
-                            Level.SEVERE,
-                            "Mails list response couldn't be sent.",
-                            ex
+                        Level.SEVERE,
+                        "Mails list response couldn't be sent.",
+                        ex
                     );
                 }
             }
@@ -232,9 +233,9 @@ public class ListCommand extends AbstractPop3Command
             catch(IOException ex)
             {
                 Logger.getLogger(ListCommand.class.getName()).log(
-                        Level.SEVERE,
-                        "Mails list response couldn't be sent.",
-                        ex
+                    Level.SEVERE,
+                    "Mails list response couldn't be sent.",
+                    ex
                 );
             }
         }

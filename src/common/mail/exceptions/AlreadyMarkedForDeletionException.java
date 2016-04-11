@@ -7,6 +7,7 @@ package common.mail.exceptions;
  */
 public class AlreadyMarkedForDeletionException extends MarkedForDeletionException
 {
+
     /**
      * Creates a new <code>AlreadyMarkedForDeletionException</code> exception.
      *

@@ -7,6 +7,7 @@ package common.mail.exceptions;
  */
 public class NonExistentMailException extends IndexOutOfBoundsException
 {
+
     /**
      * Creates a new <code>NonExistentMailException</code> exception.
      *

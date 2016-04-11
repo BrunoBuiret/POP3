@@ -13,6 +13,7 @@ import javax.swing.ListCellRenderer;
  */
 public class MailCellRenderer extends JLabel implements ListCellRenderer<Mail>
 {
+
     @Override
     public Component getListCellRendererComponent(JList<? extends Mail> list, Mail value, int index, boolean isSelected, boolean cellHasFocus)
     {
@@ -38,15 +39,15 @@ public class MailCellRenderer extends JLabel implements ListCellRenderer<Mail>
 
         // Build cell
         this.setText(String.format(
-                "<html>"
-                + "<div style='padding: 3px 2px; border-left: 3px solid %s;'>"
-                + "%s<br/>"
-                + "<span style='font-size: 90%%';>%s</span>"
-                + "</div>"
-                + "</html>",
-                isSelected ? "blue" : "gray",
-                subject,
-                from
+            "<html>"
+            + "<div style='padding: 3px 2px; border-left: 3px solid %s;'>"
+            + "%s<br/>"
+            + "<span style='font-size: 90%%';>%s</span>"
+            + "</div>"
+            + "</html>",
+            isSelected ? "blue" : "gray",
+            subject,
+            from
         ));
 
         return this;

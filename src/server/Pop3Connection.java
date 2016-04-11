@@ -24,6 +24,7 @@ import server.commands.AbstractPop3Command;
  */
 public class Pop3Connection extends Thread
 {
+
     /**
      * The connection's link to the server.
      */
@@ -82,9 +83,9 @@ public class Pop3Connection extends Thread
         catch(IOException ex)
         {
             Logger.getLogger(Pop3Connection.class.getName()).log(
-                    Level.SEVERE,
-                    "Couldn't get the socket' streams.",
-                    ex
+                Level.SEVERE,
+                "Couldn't get the socket' streams.",
+                ex
             );
         }
     }
@@ -121,13 +122,13 @@ public class Pop3Connection extends Thread
                 // Build security digest
                 StringBuilder digestBuilder = new StringBuilder();
                 byte[] rawSecurityDigest = md5.digest(
-                        String.format(
-                                "<%d.%d@%s>%s",
-                                processId,
-                                clock,
-                                host,
-                                this.server.getSecret()
-                        ).getBytes(StandardCharsets.ISO_8859_1)
+                    String.format(
+                        "<%d.%d@%s>%s",
+                        processId,
+                        clock,
+                        host,
+                        this.server.getSecret()
+                    ).getBytes(StandardCharsets.ISO_8859_1)
                 );
 
                 for(byte b : rawSecurityDigest)
@@ -152,9 +153,9 @@ public class Pop3Connection extends Thread
                 this.securityDigest = null;
 
                 Logger.getLogger(Pop3Connection.class.getName()).log(
-                        Level.SEVERE,
-                        "Couldn't fetch MD5 message digest.",
-                        ex
+                    Level.SEVERE,
+                    "Couldn't fetch MD5 message digest.",
+                    ex
                 );
             }
 
@@ -172,9 +173,9 @@ public class Pop3Connection extends Thread
         catch(IOException ex)
         {
             Logger.getLogger(Pop3Connection.class.getName()).log(
-                    Level.SEVERE,
-                    "Couldn't send greetings.",
-                    ex
+                Level.SEVERE,
+                "Couldn't send greetings.",
+                ex
             );
 
             // Close the socket
@@ -223,9 +224,9 @@ public class Pop3Connection extends Thread
                         catch(IOException ex)
                         {
                             Logger.getLogger(Pop3Connection.class.getName()).log(
-                                    Level.SEVERE,
-                                    "Couldn't send error response.",
-                                    ex
+                                Level.SEVERE,
+                                "Couldn't send error response.",
+                                ex
                             );
                         }
                         finally
@@ -251,9 +252,9 @@ public class Pop3Connection extends Thread
                     catch(IOException ex)
                     {
                         Logger.getLogger(Pop3Connection.class.getName()).log(
-                                Level.SEVERE,
-                                "Couldn't send error response.",
-                                ex
+                            Level.SEVERE,
+                            "Couldn't send error response.",
+                            ex
                         );
                     }
                     finally
@@ -303,12 +304,12 @@ public class Pop3Connection extends Thread
             if(this.server.isDebug())
             {
                 Logger.getLogger(Pop3Connection.class.getName()).log(
-                        Level.INFO,
-                        "<- {0}:{1} {2}",
-                        new Object[]
-                        {
-                            this.socket.getInetAddress(), this.socket.getPort(), new String(dataStream.toByteArray()).trim()
-                        }
+                    Level.INFO,
+                    "<- {0}:{1} {2}",
+                    new Object[]
+                    {
+                        this.socket.getInetAddress(), this.socket.getPort(), new String(dataStream.toByteArray()).trim()
+                    }
                 );
             }
 
@@ -320,9 +321,9 @@ public class Pop3Connection extends Thread
         catch(IOException ex)
         {
             Logger.getLogger(Pop3Server.class.getName()).log(
-                    Level.SEVERE,
-                    "Couldn't read request from client.",
-                    ex
+                Level.SEVERE,
+                "Couldn't read request from client.",
+                ex
             );
         }
 
@@ -336,7 +337,7 @@ public class Pop3Connection extends Thread
      * @throws IOException Thrown when the response can't be sent.
      */
     public void sendResponse(String response)
-            throws IOException
+        throws IOException
     {
         ByteArrayOutputStream dataStream;
         DataOutputStream dataWriter = new DataOutputStream(dataStream = new ByteArrayOutputStream());
@@ -350,12 +351,12 @@ public class Pop3Connection extends Thread
             if(this.server.isDebug())
             {
                 Logger.getLogger(Pop3Server.class.getName()).log(
-                        Level.INFO,
-                        "-> {0}:{1} {2}",
-                        new Object[]
-                        {
-                            this.socket.getInetAddress(), this.socket.getPort(), response.trim()
-                        }
+                    Level.INFO,
+                    "-> {0}:{1} {2}",
+                    new Object[]
+                    {
+                        this.socket.getInetAddress(), this.socket.getPort(), response.trim()
+                    }
                 );
             }
 
@@ -366,9 +367,9 @@ public class Pop3Connection extends Thread
         catch(IOException ex)
         {
             Logger.getLogger(Pop3Connection.class.getName()).log(
-                    Level.SEVERE,
-                    "Couldn't send response to the client.",
-                    ex
+                Level.SEVERE,
+                "Couldn't send response to the client.",
+                ex
             );
 
             throw ex;
@@ -387,9 +388,9 @@ public class Pop3Connection extends Thread
         catch(IOException ex)
         {
             Logger.getLogger(Pop3Connection.class.getName()).log(
-                    Level.SEVERE,
-                    "Couldn't close socket.",
-                    ex
+                Level.SEVERE,
+                "Couldn't close socket.",
+                ex
             );
         }
     }

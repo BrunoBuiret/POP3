@@ -7,6 +7,7 @@ package common.mail.exceptions;
  */
 public class MarkedForDeletionException extends IllegalArgumentException
 {
+
     /**
      * Creates a new <code>MailMarkedForDeletionException</code> exception.
      *

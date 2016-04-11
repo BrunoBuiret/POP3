@@ -25,6 +25,7 @@ import java.security.NoSuchAlgorithmException;
  */
 public class Pop3Client
 {
+
     protected enum StateEnum
     {
         Initialisation,
@@ -94,10 +95,10 @@ public class Pop3Client
                     MessageDigest md5 = MessageDigest.getInstance("MD5");
                     StringBuilder digestBuilder = new StringBuilder();
                     byte[] rawSecurityDigest = md5.digest((greetingsResponse.substring(
-                            greetingsResponse.indexOf("<"),
-                            greetingsResponse.indexOf(">") + 1
+                        greetingsResponse.indexOf("<"),
+                        greetingsResponse.indexOf(">") + 1
                     )
-                            + this.secret).getBytes(StandardCharsets.ISO_8859_1));
+                        + this.secret).getBytes(StandardCharsets.ISO_8859_1));
 
                     for(byte b : rawSecurityDigest)
                     {
@@ -245,8 +246,8 @@ public class Pop3Client
     /**
      * Gets the last username.
      *
-     * @return The last username if {@link #user(java.lang.String)}
-     * has already been called, <code>null</code> otherwise.
+     * @return The last username if {@link #user(java.lang.String)} has already
+     * been called, <code>null</code> otherwise.
      */
     public String getUserName()
     {

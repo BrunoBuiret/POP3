@@ -7,6 +7,7 @@ package common;
  */
 public abstract class Pop3Protocol
 {
+
     /**
      * POP3' success indicator.
      */

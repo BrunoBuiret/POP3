@@ -9,6 +9,7 @@ import java.io.IOException;
  */
 public class FailedMailBoxUpdateException extends IOException
 {
+
     /**
      * Creates a new <code>FailedMailBoxUpdateException</code> exception.
      *

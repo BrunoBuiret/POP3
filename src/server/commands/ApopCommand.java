@@ -21,6 +21,7 @@ import server.Pop3Connection;
  */
 public class ApopCommand extends AbstractPop3Command
 {
+
     /**
      * {@inheritDoc}
      */
@@ -42,7 +43,7 @@ public class ApopCommand extends AbstractPop3Command
         if(null != connection.getSecurityDigest())
         {
             if(request.length() == 4
-                    || (request.length() > 4 && request.substring(4).trim().isEmpty()))
+                || (request.length() > 4 && request.substring(4).trim().isEmpty()))
             {
                 try
                 {
@@ -56,9 +57,9 @@ public class ApopCommand extends AbstractPop3Command
                 catch(IOException ex)
                 {
                     Logger.getLogger(ApopCommand.class.getName()).log(
-                            Level.SEVERE,
-                            "Authentication response couldn't be sent.",
-                            ex
+                        Level.SEVERE,
+                        "Authentication response couldn't be sent.",
+                        ex
                     );
                 }
             }
@@ -74,10 +75,10 @@ public class ApopCommand extends AbstractPop3Command
                     {
                         // Try opening the mailbox and reading its contents
                         MailBox mailBox = new MailBox(
-                                connection.getServer().getMailBoxesPath()
-                                + File.separator
-                                + arguments[0]
-                                + ".mbox"
+                            connection.getServer().getMailBoxesPath()
+                            + File.separator
+                            + arguments[0]
+                            + ".mbox"
                         );
                         mailBox.canRead();
 
@@ -140,9 +141,9 @@ public class ApopCommand extends AbstractPop3Command
                         catch(IOException ex1)
                         {
                             Logger.getLogger(ApopCommand.class.getName()).log(
-                                    Level.SEVERE,
-                                    "Authentication response couldn't be sent.",
-                                    ex1
+                                Level.SEVERE,
+                                "Authentication response couldn't be sent.",
+                                ex1
                             );
                         }
                     }
@@ -162,18 +163,18 @@ public class ApopCommand extends AbstractPop3Command
                         catch(IOException ex1)
                         {
                             Logger.getLogger(ApopCommand.class.getName()).log(
-                                    Level.SEVERE,
-                                    "Authentication response couldn't be sent.",
-                                    ex1
+                                Level.SEVERE,
+                                "Authentication response couldn't be sent.",
+                                ex1
                             );
                         }
                     }
                     catch(IOException ex)
                     {
                         Logger.getLogger(ApopCommand.class.getName()).log(
-                                Level.SEVERE,
-                                "Authentication response couldn't be sent.",
-                                ex
+                            Level.SEVERE,
+                            "Authentication response couldn't be sent.",
+                            ex
                         );
                     }
                 }
@@ -191,9 +192,9 @@ public class ApopCommand extends AbstractPop3Command
                     catch(IOException ex)
                     {
                         Logger.getLogger(ApopCommand.class.getName()).log(
-                                Level.SEVERE,
-                                "Authentication response couldn't be sent.",
-                                ex
+                            Level.SEVERE,
+                            "Authentication response couldn't be sent.",
+                            ex
                         );
                     }
                 }
@@ -213,9 +214,9 @@ public class ApopCommand extends AbstractPop3Command
             catch(IOException ex)
             {
                 Logger.getLogger(ApopCommand.class.getName()).log(
-                        Level.SEVERE,
-                        "Authentication response couldn't be sent.",
-                        ex
+                    Level.SEVERE,
+                    "Authentication response couldn't be sent.",
+                    ex
                 );
             }
         }

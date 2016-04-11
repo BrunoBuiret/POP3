@@ -82,10 +82,10 @@ public class Pop3Server
     public Pop3Server()
     {
         this(
-                Pop3Server.DEFAULT_NAME,
-                Pop3Server.DEFAULT_PORT,
-                Pop3Server.DEFAULT_MAILBOXES_PATH,
-                false
+            Pop3Server.DEFAULT_NAME,
+            Pop3Server.DEFAULT_PORT,
+            Pop3Server.DEFAULT_MAILBOXES_PATH,
+            false
         );
     }
 
@@ -98,10 +98,10 @@ public class Pop3Server
     public Pop3Server(String name)
     {
         this(
-                name,
-                Pop3Server.DEFAULT_PORT,
-                Pop3Server.DEFAULT_MAILBOXES_PATH,
-                false
+            name,
+            Pop3Server.DEFAULT_PORT,
+            Pop3Server.DEFAULT_MAILBOXES_PATH,
+            false
         );
     }
 
@@ -114,10 +114,10 @@ public class Pop3Server
     public Pop3Server(int port)
     {
         this(
-                Pop3Server.DEFAULT_NAME,
-                port,
-                Pop3Server.DEFAULT_MAILBOXES_PATH,
-                false
+            Pop3Server.DEFAULT_NAME,
+            port,
+            Pop3Server.DEFAULT_MAILBOXES_PATH,
+            false
         );
     }
 
@@ -130,10 +130,10 @@ public class Pop3Server
     public Pop3Server(String name, int port)
     {
         this(
-                name,
-                port,
-                Pop3Server.DEFAULT_MAILBOXES_PATH,
-                false
+            name,
+            port,
+            Pop3Server.DEFAULT_MAILBOXES_PATH,
+            false
         );
     }
 
@@ -147,10 +147,10 @@ public class Pop3Server
     public Pop3Server(String name, int port, String mailboxesPath)
     {
         this(
-                name,
-                port,
-                mailboxesPath,
-                false
+            name,
+            port,
+            mailboxesPath,
+            false
         );
     }
 
@@ -173,40 +173,40 @@ public class Pop3Server
 
         // Register commands
         this.supportedCommands.put(
-                "QUIT",
-                new QuitCommand()
+            "QUIT",
+            new QuitCommand()
         );
         this.supportedCommands.put(
-                "APOP",
-                new ApopCommand()
+            "APOP",
+            new ApopCommand()
         );
         this.supportedCommands.put(
-                "USER",
-                new UserCommand()
+            "USER",
+            new UserCommand()
         );
         this.supportedCommands.put(
-                "PASS",
-                new PassCommand()
+            "PASS",
+            new PassCommand()
         );
         this.supportedCommands.put(
-                "LIST",
-                new ListCommand()
+            "LIST",
+            new ListCommand()
         );
         this.supportedCommands.put(
-                "STAT",
-                new StatCommand()
+            "STAT",
+            new StatCommand()
         );
         this.supportedCommands.put(
-                "RETR",
-                new RetrCommand()
+            "RETR",
+            new RetrCommand()
         );
         this.supportedCommands.put(
-                "DELE",
-                new DeleCommand()
+            "DELE",
+            new DeleCommand()
         );
         this.supportedCommands.put(
-                "RSET",
-                new RsetCommand()
+            "RSET",
+            new RsetCommand()
         );
 
         // Start server
@@ -217,9 +217,9 @@ public class Pop3Server
         catch(IOException ex)
         {
             Logger.getLogger(Pop3Server.class.getName()).log(
-                    Level.SEVERE,
-                    "Couldn't start server socket.",
-                    ex
+                Level.SEVERE,
+                "Couldn't start server socket.",
+                ex
             );
         }
     }
@@ -239,9 +239,9 @@ public class Pop3Server
             catch(IOException ex)
             {
                 Logger.getLogger(Pop3Server.class.getName()).log(
-                        Level.SEVERE,
-                        "Cannot accept new connection.",
-                        ex
+                    Level.SEVERE,
+                    "Cannot accept new connection.",
+                    ex
                 );
             }
         }
@@ -306,7 +306,7 @@ public class Pop3Server
     public AbstractPop3Command supportsCommand(String command)
     {
         return this.supportedCommands.containsKey(command)
-                ? this.supportedCommands.get(command)
-                : null;
+            ? this.supportedCommands.get(command)
+            : null;
     }
 }

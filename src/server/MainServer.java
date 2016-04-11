@@ -7,6 +7,7 @@ package server;
  */
 public abstract class MainServer
 {
+
     /**
      * Instantiates a new POP3 server.
      *
@@ -15,10 +16,10 @@ public abstract class MainServer
     public static void main(String[] args)
     {
         Pop3Server server = new Pop3Server(
-                "etu.univ-lyon1.fr",
-                Pop3Server.DEFAULT_PORT,
-                "D:\\",
-                true
+            "etu.univ-lyon1.fr",
+            Pop3Server.DEFAULT_PORT,
+            "D:\\",
+            true
         );
         server.run();
     }
