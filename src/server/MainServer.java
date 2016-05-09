@@ -16,7 +16,7 @@ public abstract class MainServer
     {
         Pop3Server server = new Pop3Server(
             "etu.univ-lyon1.fr",
-            Pop3Server.DEFAULT_PORT,
+            8888,
             "D:\\",
             true
         );
