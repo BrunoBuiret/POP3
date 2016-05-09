@@ -186,6 +186,51 @@ public class Pop3Client
 
         return null;
     }
+    
+    /**
+     * Reads data from the server until a specific pattern is found.
+     * 
+     * @param pattern The pattern to look for.
+     * @return The client's request.
+     */
+    public String readUntil(String pattern)
+    {
+        // Initialize vars
+        ByteArrayOutputStream dataStream;
+        DataOutputStream dataWriter = new DataOutputStream(dataStream = new ByteArrayOutputStream());
+        int readByte;
+        String currentData;
+
+        try
+        {
+            do
+            {
+                // Append the next character to the buffer
+                readByte = this.socketReader.read();
+
+                if(-1 != readByte)
+                {
+                    dataWriter.writeByte(readByte);
+                }
+
+                // Build a string with the current data
+                currentData = new String(dataStream.toByteArray(), StandardCharsets.ISO_8859_1);
+            }
+            while(!currentData.endsWith(pattern));
+
+            return currentData;
+        }
+        catch(IOException ex)
+        {
+            Logger.getLogger(Pop3Client.class.getName()).log(
+                Level.SEVERE,
+                "Couldn't read data from server.",
+                ex
+            );
+        }
+
+        return null;
+    }
 
     /**
      *
@@ -341,10 +386,7 @@ public class Pop3Client
     public int retrieve(int index)
     {
         this.sendRequest(this.encodeRequest("RETR " + index + Pop3Protocol.END_OF_LINE));
-        StringBuilder serverResponseBuilder = new StringBuilder();
-        serverResponseBuilder.append(this.readResponse());
-        serverResponseBuilder.append(this.readResponse());
-        String serverResponse = serverResponseBuilder.toString();
+        String serverResponse = this.readUntil("\r\n.\r\n");
         int isValid = this.stateValidation(StateEnum.WaitForMessageReception, serverResponse);
 
         if(1 == isValid)
